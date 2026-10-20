@@ -65,6 +65,26 @@ th,td{padding:10px 8px;border-bottom:1px solid var(--bd);text-align:left;white-s
 .cf{position:fixed;top:-30px;font-style:normal;z-index:20;pointer-events:none;animation:fall 1.9s ease-in forwards}
 @keyframes fall{to{transform:translate(var(--dx),105vh) rotate(540deg);opacity:.2}}
 @media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
+.mt{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;overflow:hidden;background:linear-gradient(135deg,#1b1148,#4c1d95 45%,#be185d);background-size:220% 220%;animation:mflow 10s ease infinite;color:#fff}
+@keyframes mflow{50%{background-position:100% 50%}}
+.mt .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;animation:mdrift 12s ease-in-out infinite alternate}
+.mt .b1{width:320px;height:320px;background:#f472b6;top:-90px;left:-90px}
+.mt .b2{width:360px;height:360px;background:#60a5fa;bottom:-110px;right:-90px;animation-delay:-6s}
+@keyframes mdrift{to{transform:translate(50px,60px) scale(1.25)}}
+.mt .p{position:absolute;bottom:-40px;font-size:22px;opacity:.75;animation:rise 9s linear infinite}
+@keyframes rise{to{transform:translateY(-115vh) rotate(360deg);opacity:0}}
+.mt .box{position:relative;max-width:380px;width:100%;background:#ffffff1a;border:1px solid #ffffff40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:28px;padding:30px 22px;box-shadow:0 20px 60px #0006;animation:pop .8s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.8) translateY(30px)}}
+.mt .gears{font-size:56px;line-height:1;margin-bottom:10px;display:flex;justify-content:center;gap:4px}
+.mt .g-a{display:inline-block;animation:spin 4s linear infinite}
+.mt .g-b{display:inline-block;animation:spin 3s linear infinite reverse;font-size:40px;margin-top:22px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mt h1{margin:6px 0 10px;font-size:26px;line-height:1.3}
+.mt p{margin:0 0 16px;font-size:16px;line-height:1.7;white-space:pre-wrap;opacity:.95}
+.mt .eta{display:inline-block;background:#ffffff26;border-radius:99px;padding:6px 16px;font-size:14px;margin-bottom:16px}
+.mt .ld{height:8px;border-radius:9px;background:#ffffff30;overflow:hidden}
+.mt .ld i{display:block;height:100%;width:40%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f472b6,#60a5fa);animation:slide 1.6s ease-in-out infinite}
+@keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
 </style>
 </head>
 <body>
@@ -93,7 +113,7 @@ function sampleRead(){return{id:'r1',ord:20,type:'read',icon:'📰',title:'আ�
 
 const LV=[[0,'ব্রোঞ্জ','🥉',0],[10,'সিলভার','🥈',10],[30,'গোল্ড','🥇',20],[70,'প্ল্যাটিনাম','💎',30],[150,'ডায়মন্ড','👑',50]];
 const lvl=n=>{let i=0;LV.forEach((l,k)=>{if((n||0)>=l[0])i=k});return i};
-const def=()=>({s:{name:'Smartpay',rate:100,minW:1000,ref:50,refMax:20,signup:20,cool:24,streak7:50,devLock:1,maint:0,wdOn:1,dailyCap:20,adCode:'',adH:250,admin:'admin',apass:'admin123',notice:'প্রতিদিন লগইন করে বোনাস নিন!'},u:[],w:[],l:[],r:[],dev:{},t:[...seed(),sampleRead()]});
+const def=()=>({s:{name:'Smartpay',rate:100,minW:1000,ref:50,refMax:20,signup:20,cool:24,streak7:50,devLock:1,maint:0,wdOn:1,dailyCap:20,adCode:'',adH:250,maintTitle:'',maintMsg:'',maintEta:'',admin:'admin',apass:'admin123',notice:'প্রতিদিন লগইন করে বোনাস নিন!'},u:[],w:[],l:[],r:[],dev:{},t:[...seed(),sampleRead()]});
 let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}D=D||def();D.r=D.r||[];D.dev=D.dev||{};
 if(FB){D.t=[];D.u=[];D.w=[];D.l=[];D.r=[]}
 let me=null,adm=false,tab='home',authMode='login',tick=null;
@@ -122,24 +142,25 @@ function authView(){
  const ref=new URLSearchParams(location.search).get('ref')||'',reg=authMode==='reg';
  return `<div class="hero" style="border-radius:0 0 40px 40px;text-align:center;padding:40px 16px"><div style="font-size:48px">💰</div><b style="font-size:30px">${esc(D.s.name)}</b><div>স্মার্ট টাস্ক • স্মার্ট রিওয়ার্ড • টাকা তুলুন</div></div>
  <div class="auth"><div class="card"><div style="text-align:center;margin-bottom:8px">${FB?'':'<span class="mode">ডেমো মোড – ডেটা শুধু এই ব্রাউজারে</span>'}</div>
- <label>ইউজারনেম</label><input id="a_u" autocomplete="username">
- <label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="a_p" type="password" autocomplete="current-password">
+ <label>ইমেইল বা ইউজারনেম</label><input id="a_u" autocomplete="username" autocapitalize="none">
+ ${reg?'<div class="mut" style="margin:-6px 0 10px">💡 আসল ইমেইল দিলে পাসওয়ার্ড ভুলে গেলে রিসেট করতে পারবেন।</div>':''}<label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="a_p" type="password" autocomplete="current-password">
  ${reg?`<label>রেফার কোড (ঐচ্ছিক)</label><input id="a_r" value="${esc(ref)}">`:''}
  <button style="width:100%" onclick="doAuth()">${reg?'রেজিস্টার করুন':'লগইন'}</button>
- <p style="text-align:center"><a href="#" onclick="authMode='${reg?'login':'reg'}';render();return false">${reg?'একাউন্ট আছে? লগইন':'নতুন একাউন্ট খুলুন'}</a></p>
+ <p style="text-align:center"><a href="#" onclick="authMode='${reg?'login':'reg'}';render();return false">${reg?'একাউন্ট আছে? লগইন':'নতুন একাউন্ট খুলুন'}</a>${reg?'':' · <a href="#" onclick="forgot();return false">পাসওয়ার্ড ভুলে গেছেন?</a>'}</p>
  ${FB?'':`<p class="mut" style="text-align:center">ডেমো অ্যাডমিন: ${esc(D.s.admin)} / ${esc(D.s.apass)}</p>`}</div></div>`}
 async function doAuth(){
- const n=$('#a_u').value.trim().toLowerCase(),p=$('#a_p').value,em=n+'@earnlink.app';
- if(!/^[a-z0-9_]{3,20}$/.test(n)||p.length<6)return toast('ইউজারনেম (ইংরেজি/সংখ্যা, ৩+) ও পাসওয়ার্ড ৬+ অক্ষর দিন');
+ const raw=$('#a_u').value.trim().toLowerCase(),isMail=raw.includes('@'),p=$('#a_p').value,
+ n=isMail?(raw.split('@')[0].replace(/[^a-z0-9_]/g,'').slice(0,20)||'user'):raw,em=isMail?raw:raw+'@earnlink.app';
+ if((isMail?!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw):!/^[a-z0-9_]{3,20}$/.test(n))||p.length<6)return toast('সঠিক ইমেইল (বা ইংরেজি ইউজারনেম, ৩+ অক্ষর) ও ৬+ অক্ষরের পাসওয়ার্ড দিন');
  try{
-  if(!FB&&n===D.s.admin&&p===D.s.apass){adm=true;tab='dash';return render()}
+  if(!FB&&!isMail&&n===D.s.admin&&p===D.s.apass){adm=true;tab='dash';return render()}
   if(authMode==='reg'){
    const keys=await devKeys(),by=await findRef(($('#a_r')?.value||'').trim().toUpperCase());let id;
    if(FB){const c=await au.createUserWithEmailAndPassword(em,p);id=c.user.uid;
     if(D.s.devLock)for(const k of keys){if((await fs.doc('devices/'+k).get()).exists){await c.user.delete();return toast('এই ডিভাইস থেকে আগেই একাউন্ট খোলা হয়েছে')}}}
    else{if(D.u.some(x=>x.name===n))return toast('এই ইউজারনেম আছে');
     if(D.s.devLock&&keys.some(k=>D.dev[k]))return toast('এই ডিভাইস থেকে আগেই একাউন্ট খোলা হয়েছে');id=rid()}
-   const u={id,name:n,pts:D.s.signup,code:rid().toUpperCase().slice(0,6),by:by&&by!==id?by:null,banned:0,done:{},pend:null,tasks:0,streak:0,last:'',joined:Date.now()};
+   const u={id,name:n,email:isMail?em:'',pts:D.s.signup,code:rid().toUpperCase().slice(0,6),by:by&&by!==id?by:null,banned:0,done:{},pend:null,tasks:0,streak:0,last:'',joined:Date.now()};
    if(!FB)u.pass=p;
    keys.forEach(k=>{if(FB)fs.doc('devices/'+k).set({u:id});else D.dev[k]=id});
    if(FB)fs.doc('codes/'+u.code).set({u:id});
@@ -149,6 +170,10 @@ async function doAuth(){
   if(FB)await au.signInWithEmailAndPassword(em,p);
   else{const u=D.u.find(x=>x.name===n&&x.pass===p);if(!u)return toast('ইউজারনেম/পাসওয়ার্ড ভুল');me=u.id;tab='home';render()}
  }catch(e){toast(e.code==='auth/email-already-in-use'?'এই ইউজারনেম আছে':e.code==='auth/invalid-credential'?'ইউজারনেম/পাসওয়ার্ড ভুল':(e.message||'সমস্যা হয়েছে'))}}
+async function forgot(){const raw=($('#a_u').value||'').trim().toLowerCase();
+ if(!raw.includes('@'))return toast('উপরে আপনার ইমেইল লিখে চাপুন (শুধু ইউজারনেমে খোলা একাউন্টে রিসেট সম্ভব নয়)');
+ if(!FB)return toast('পাসওয়ার্ড রিসেট শুধু আসল (Firebase) সাইটে কাজ করে');
+ try{await au.sendPasswordResetEmail(raw);toast('রিসেট লিংক ইমেইলে পাঠানো হয়েছে, স্পাম ফোল্ডারও দেখুন')}catch(e){toast('ইমেইল পাঠানো যায়নি: '+(e.code||''))}}
 function logout(){rd=null;if(FB)au.signOut();me=null;adm=false;authMode='login';render()}
 
 /* ---------- Firebase boot ---------- */
@@ -227,7 +252,7 @@ function userView(){
   body=`<div class="card row"><div><b>🔥 ডেইলি বোনাস</b><div class="mut">স্ট্রিক: ${u.streak||0} দিন · ৭ দিন পূর্ণ হলে +${D.s.streak7}</div></div><button class="${got?'sec':'ok'}" ${got?'disabled':''} onclick="daily()">${got?'নেওয়া হয়েছে ✓':'বোনাস নিন'}</button></div>`+pend+
   D.t.filter(t=>t.on).map((t,i)=>{const l=u.done[t.id],dn=l&&Date.now()-l<D.s.cool*3600e3,g=Math.round(t.pts*(1+LV[L][3]/100));
    return (i&&i%6===0?adBox():'')+`<div class="card task row" style="--h:${(i*47)%360}"><div class="row" style="justify-content:flex-start"><div class="ic">${t.icon||'⭐'}</div><div><b>${esc(t.title)}</b><div class="mut">${t.type==='read'?'📖 '+(t.pages||[]).length+' পেজ · ':''}⏱ ${t.sec} সেকেন্ড · ⭐ ${g} পয়েন্ট</div></div></div>
-   <button ${dn||u.pend?'disabled':''} onclick="startTask('${t.id}')">${dn?'সম্পন্ন ✓':'শুরু করুন'}</button></div>`}).join('')||'<div class="card mut">এখন কোনো টাস্ক নেই</div>'}
+   <button ${dn?'disabled':''} onclick="startTask('${t.id}')">${dn?'সম্পন্ন ✓':'শুরু করুন'}</button></div>`}).join('')||'<div class="card mut">এখন কোনো টাস্ক নেই</div>'}
  if(tab==='ref')body=`<div class="card"><b>🎁 আপনার রেফার কোড: ${u.code}</b><p class="mut">বন্ধু রেজিস্টার করে প্রথম টাস্ক শেষ করলে আপনি পাবেন ${D.s.ref} পয়েন্ট। সর্বোচ্চ ${D.s.refMax} জন (পেয়েছেন ${paid} জনের)।</p>
   <input readonly value="${esc(link)}" onclick="this.select()"><button onclick="navigator.clipboard?.writeText('${esc(link)}');toast('কপি হয়েছে')">📋 লিংক কপি</button></div>
   <div class="card"><b>মোট রেফারাল: ${D.r.length}</b></div>`+adBox();
@@ -252,15 +277,15 @@ function adminView(){
   <label>টাইটেল</label><input id="n_t"><label>লিংক (আপনার নিজের কনটেন্ট পেজ)</label><input id="n_u" placeholder="https://"><button onclick="addTask()">যোগ করুন</button> <button class="sec" onclick="if(confirm('২০টি ডিফল্ট টাস্ক বসবে (একই আইডি থাকলে বদলে যাবে)'))seedTasks()">২০টি ডিফল্ট টাস্ক সিড</button></div><div class="card"><b>📖 নতুন আর্টিকেল টাস্ক (প্রতি পেজে আপনার অ্যাড)</b><div class="grid"><div><label>আইকন</label><input id="r_i" value="📰"></div><div><label>প্রতি পেজে সেকেন্ড</label><input id="r_s" type="number" value="15"></div><div><label>মোট পয়েন্ট</label><input id="r_p" type="number" value="20"></div></div><label>টাইটেল</label><input id="r_t"><label>পেজগুলো (প্রতি পেজের প্রথম লাইন শিরোনাম; পেজ আলাদা করতে একটা লাইনে --- লিখুন)</label><textarea id="r_b" rows="8" placeholder="পেজ ১ শিরোনাম&#10;লেখা...&#10;---&#10;পেজ ২ শিরোনাম&#10;লেখা..."></textarea><label>এই টাস্কের আলাদা Adsterra কোড (ঐচ্ছিক, ফাঁকা রাখলে সেটিংসের কোড দেখাবে)</label><textarea id="r_a" rows="3"></textarea><button onclick="addRead()">আর্টিকেল টাস্ক যোগ করুন</button></div>`
   +D.t.map(t=>`<div class="card row"><div><b>${t.icon||''} ${esc(t.title)}</b><div class="mut" style="word-break:break-all">${t.type==='read'?'📖 '+(t.pages||[]).length+' পেজ × '+t.per+'s':esc(t.url)}<br>${t.sec}s · ${t.pts} পয়েন্ট · <span class="tag ${t.on?'ok':'bad'}">${t.on?'চালু':'বন্ধ'}</span></div></div>
   <div><button class="sec" onclick="editTask('${t.id}')">এডিট</button> <button class="sec" onclick="togTask('${t.id}')">${t.on?'বন্ধ':'চালু'}</button> <button class="bad" onclick="delTask('${t.id}')">মুছুন</button></div></div>`).join('');
- if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${LV[lvl(u.tasks)][2]}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
-  <td><button class="sec" onclick="adjPts('${u.id}')">পয়েন্ট</button> <button class="sec" onclick="ban('${u.id}')">${u.banned?'আনব্লক':'ব্লক'}</button></td></tr>`).join('')||'<tr><td colspan=7 class="mut">কোনো ইউজার নেই</td></tr>'}</table></div>`;
+ if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}${u.email?'<div class="mut">'+esc(u.email)+'</div>':''}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${LV[lvl(u.tasks)][2]}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
+  <td><button class="sec" onclick="adjPts('${u.id}')">পয়েন্ট</button> <button class="sec" onclick="resetTasks('${u.id}')">টাস্ক রিসেট</button> <button class="sec" onclick="ban('${u.id}')">${u.banned?'আনব্লক':'ব্লক'}</button></td></tr>`).join('')||'<tr><td colspan=7 class="mut">কোনো ইউজার নেই</td></tr>'}</table></div>`;
  if(tab==='wd')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট (৳)</th><th>মাধ্যম</th><th>নম্বর</th><th>স্ট্যাটাস</th><th></th></tr>${D.w.map(w=>`<tr><td>${esc(w.uname||D.u.find(x=>x.id===w.u)?.name)}</td><td>${w.amt} (${tk(w.amt)})</td><td>${w.m}</td><td>${esc(w.no)}</td><td>${stTag(w.st)}</td>
   <td>${w.st==='pending'?`<button class="ok" onclick="wdSet('${w.id}','paid')">পরিশোধ</button> <button class="bad" onclick="wdSet('${w.id}','rejected')">বাতিল</button>`:''}</td></tr>`).join('')||'<tr><td colspan=6 class="mut">কোনো রিকোয়েস্ট নেই</td></tr>'}</table></div>`;
  if(tab==='set'){const s=D.s,f=(k,l,t='number')=>`<div><label>${l}</label><input id="s_${k}" type="${t}" value="${esc(s[k])}"></div>`;
   b=`<div class="card"><div class="grid">${f('name','সাইটের নাম','text')}${f('rate','কত পয়েন্টে ৳১')}${f('minW','ন্যূনতম উইথড্র (পয়েন্ট)')}${f('ref','রেফার বোনাস')}${f('refMax','সর্বোচ্চ রেফার বোনাস (জন)')}${f('signup','সাইনআপ বোনাস')}${f('cool','টাস্ক রিপিট (ঘণ্টা)')}${f('streak7','৭ দিনের স্ট্রিক বোনাস')}
   <div><label>ডিভাইস লক</label><select id="s_devLock"><option value="1" ${s.devLock?'selected':''}>চালু</option><option value="0" ${s.devLock?'':'selected'}>বন্ধ (টেস্টের জন্য)</option></select></div><div><label>মেইনটেন্যান্স মোড</label><select id="s_maint"><option value="0" ${s.maint?'':'selected'}>বন্ধ</option><option value="1" ${s.maint?'selected':''}>চালু</option></select></div><div><label>উইথড্র</label><select id="s_wdOn"><option value="1" ${s.wdOn?'selected':''}>চালু</option><option value="0" ${s.wdOn?'':'selected'}>বন্ধ</option></select></div>${f('dailyCap','দৈনিক টাস্ক লিমিট (0 = সীমাহীন)')}</div>
   ${f('notice','নোটিশ','text')}${FB?'':f('admin','অ্যাডমিন ইউজারনেম (ডেমো)','text')+f('apass','অ্যাডমিন পাসওয়ার্ড (ডেমো)','text')}
-  <label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
+  <label>🛠 মেইনটেন্যান্স শিরোনাম</label><input id="s_maintTitle" value="${esc(s.maintTitle||'')}" placeholder="সাইট এখন আপডেট হচ্ছে"><label>🛠 মেইনটেন্যান্স বার্তা (মেইনটেন্যান্স চালু থাকলে ইউজাররা এটা দেখবে)</label><textarea id="s_maintMsg" rows="3" placeholder="আমরা সাইটটিকে আরও ভালো করছি...">${esc(s.maintMsg||'')}</textarea><label>⏰ কখন ফিরবে (ঐচ্ছিক, যেমন: রাত ১০টা)</label><input id="s_maintEta" value="${esc(s.maintEta||'')}"><button class="sec" onclick="mtPrev()" style="margin-bottom:14px">👁 মেইনটেন্যান্স পেজ প্রিভিউ (আগে সেভ করুন)</button><br><label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
   <button onclick="saveSet()">সেভ</button> ${FB?'':`<button class="bad" onclick="if(confirm('সব ডেটা মুছবে?')){D=def();sv();logout()}">ডেটা রিসেট</button>`}</div>`}
  return `<div class="hero"><div class="r"><b>🛠 অ্যাডমিন প্যানেল</b><button class="sec" onclick="logout()">লগআউট</button></div></div><div class="wrap"><div class="tabs" style="margin-top:12px">${Object.entries(tabs).map(([k,v])=>`<button class="${tab===k?'':'sec'}" onclick="tab='${k}';render()">${v}</button>`).join('')}</div>${b}</div>`}
 const putT=t=>{if(FB)fs.doc('tasks/'+t.id).set(t);else{const i=D.t.findIndex(x=>x.id===t.id);i<0?D.t.push(t):D.t[i]=t;sv()}};
@@ -273,7 +298,7 @@ const ban=id=>{const u=D.u.find(x=>x.id===id);u.banned=u.banned?0:1;sv('users',u
 function adjPts(id){const u=D.u.find(x=>x.id===id),v=parseInt(prompt('পয়েন্ট যোগ/বিয়োগ (যেমন 50 বা -50)','0'));if(!v)return;u.pts=Math.max(0,u.pts+v);log(id,'অ্যাডমিন অ্যাডজাস্ট',v);sv('users',u);render()}
 function seedTasks(){[...seed(),sampleRead()].forEach(putT);if(FB)saveSet(1);render()}
 function saveSet(q){const s=D.s;if(!q){['name','notice','admin','apass'].forEach(k=>{const e=$('#s_'+k);if(e)s[k]=e.value.trim()||s[k]});
- ['rate','minW','ref','refMax','signup','cool','streak7','dailyCap'].forEach(k=>s[k]=Math.max(0,+$('#s_'+k).value)||(k==='rate'?100:0));s.devLock=+$('#s_devLock').value;s.maint=+$('#s_maint').value;s.wdOn=+$('#s_wdOn').value;s.adCode=$('#s_adCode').value.trim();s.adH=+$('#s_adH').value||250}
+ ['rate','minW','ref','refMax','signup','cool','streak7','dailyCap'].forEach(k=>s[k]=Math.max(0,+$('#s_'+k).value)||(k==='rate'?100:0));s.devLock=+$('#s_devLock').value;s.maint=+$('#s_maint').value;s.wdOn=+$('#s_wdOn').value;s.adCode=$('#s_adCode').value.trim();s.adH=+$('#s_adH').value||250;s.maintTitle=$('#s_maintTitle').value.trim();s.maintMsg=$('#s_maintMsg').value.trim();s.maintEta=$('#s_maintEta').value.trim()}
  if(FB){const c={...s};delete c.admin;delete c.apass;fs.doc('config/main').set(c,{merge:true})}else sv();if(!q){toast('সেভ হয়েছে');render()}}
 
 let rd=null;
@@ -296,11 +321,20 @@ function addRead(){const t=$('#r_t').value.trim(),per=+$('#r_s').value||15;
  const pages=$('#r_b').value.trim().split(/\n-{3,}\n/).map(x=>{const l=x.trim().split('\n');return{title:l[0].trim(),body:l.slice(1).join('\n').trim()}}).filter(p=>p.title&&p.body);
  if(!t||pages.length<2)return toast('টাইটেল ও কমপক্ষে ২টা পেজ দিন (পেজ আলাদা করতে --- লিখুন)');
  putT({id:rid(),ord:D.t.length,type:'read',icon:$('#r_i').value||'📰',title:t,pages,per,sec:pages.length*per,pts:+$('#r_p').value||20,on:1,url:'',adCode:($('#r_a').value||'').trim()});render()}
+function maintView(prev){const s=D.s;
+ const pr=['🛠️','✨','⚙️','🔧','💫','🚀','✨','🛠️'].map((e,i)=>`<span class="p" style="left:${6+i*12}%;animation-delay:${i*-1.1}s;animation-duration:${8+i%3*2}s">${e}</span>`).join('');
+ const btn=prev?'<button class="sec" onclick="document.getElementById(\'mtp\').remove()">✕ প্রিভিউ বন্ধ করুন</button>':'<button class="sec" onclick="logout()">লগআউট</button>';
+ return `<div class="mt"><div class="blob b1"></div><div class="blob b2"></div>${pr}<div class="box"><div class="gears"><span class="g-a">⚙️</span><span class="g-b">⚙️</span></div>
+ <h1>${esc(s.maintTitle||'সাইট এখন আপডেট হচ্ছে')}</h1><p>${esc(s.maintMsg||'আমরা সাইটটিকে আরও ভালো করছি। অল্প সময় পরে আবার ঘুরে আসুন। আপনার পয়েন্ট সম্পূর্ণ নিরাপদ আছে। 💜')}</p>
+ ${s.maintEta?`<div class="eta">⏰ ${esc(s.maintEta)}</div>`:''}<div class="ld"><i></i></div><div style="margin-top:18px">${btn}</div></div></div>`}
+function mtPrev(){const d=document.createElement('div');d.id='mtp';d.innerHTML=maintView(1);document.body.appendChild(d)}
+function resetTasks(id){const u=D.u.find(x=>x.id===id);if(!u||!confirm(u.name+' এর সব টাস্ক আবার চালু করবেন?'))return;
+ u.done={};u.pend=null;if(FB)fs.doc('users/'+id).update({done:{},pend:null}).catch(e=>toast(e.code));else sv('users',u);render()}
 function boom(){const e=['🪙','⭐','✨','🎉','💎'];for(let i=0;i<26;i++){const p=document.createElement('i');p.className='cf';p.textContent=e[i%5];p.style.cssText=`left:${Math.random()*100}vw;--dx:${(Math.random()-.5)*220}px;animation-delay:${Math.random()*.35}s;font-size:${16+Math.random()*16}px`;document.body.appendChild(p);setTimeout(()=>p.remove(),2400)}}
 /* ---------- Render ---------- */
 function render(soft){
  if(soft&&(rd||['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)))return;
- $('#app').innerHTML=adm?adminView():me?(rd?readerView():userView()):authView();
+ $('#app').innerHTML=adm?adminView():me?(D.s.maint?maintView():rd?readerView():userView()):authView();
  clearInterval(tick);const u=me&&!adm&&U();if(rd){tick=setInterval(()=>{if(!document.hidden)rd.sec++;rdUp()},1000);rdUp()}
  if(u&&u.pend&&tab==='home'){const t=D.t.find(x=>x.id===u.pend.tid);if(t){const up=()=>{const el=(Date.now()-u.pend.start)/1000,left=Math.max(0,Math.ceil(t.sec-el)),cd=$('#cd');if(!cd)return;
   cd.textContent=left?`নতুন ট্যাবে ${t.sec} সেকেন্ড থাকুন — বাকি: ${left}s`:'সময় শেষ! এখন পয়েন্ট নিন।';$('#pb').style.width=Math.min(100,el/t.sec*100)+'%';$('#cl').disabled=left>0;if(!left)clearInterval(tick)};up();tick=setInterval(up,500)}}
