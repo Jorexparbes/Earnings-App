@@ -85,6 +85,7 @@ th,td{padding:10px 8px;border-bottom:1px solid var(--bd);text-align:left;white-s
 .mt .ld{height:8px;border-radius:9px;background:#ffffff30;overflow:hidden}
 .mt .ld i{display:block;height:100%;width:40%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f472b6,#60a5fa);animation:slide 1.6s ease-in-out infinite}
 @keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+.bn span svg{vertical-align:middle}button svg{margin-right:3px}.task .ic{color:hsl(var(--h) 75% 55%)}.stat b svg{vertical-align:-3px}
 </style>
 </head>
 <body>
@@ -102,16 +103,52 @@ const FB_CFG={
 }; // Firebase Web config: {apiKey:"..",authDomain:"..",projectId:"..",appId:".."} — null থাকলে ডেমো মোড
 const ADS={client:'',slot:''}; // AdSense: client:'ca-pub-XXXXXXXXXXXXXXXX', slot:'1234567890'
 /* ============================================ */
+const IC={
+home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8h14v-8M7.5 8a2.5 2.5 0 010-5C11 3 12 8 12 8M16.5 8a2.5 2.5 0 000-5C13 3 12 8 12 8"/>',
+wallet:'<path d="M3 7a2 2 0 012-2h13v4"/><path d="M3 7v11a2 2 0 002 2h15V9H5a2 2 0 01-2-2z"/><circle cx="16.5" cy="14.5" r="1"/>',
+history:'<path d="M3 12a9 9 0 109-9 9 9 0 00-6.7 3"/><path d="M3 4v4h4M12 7v5l3 2"/>',
+flame:'<path d="M12 3c1 4 5 5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>',
+check:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/>',
+star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+book:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5M8 8h7M8 12h7"/>',
+news:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/>',
+play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/>',
+bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 016 0v2"/>',
+phone:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',
+gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>',
+wrench:'<path d="M14 6a4 4 0 005 5L9 21a2.1 2.1 0 01-3-3z"/>',
+chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+x:'<path d="M6 6l12 12M18 6L6 18"/>',
+megaphone:'<path d="M4 10v4l4 1 9 4V5L8 9z"/><path d="M8 15l1 5"/>',
+medal:'<circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/>',
+coins:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
+sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+logout:'<path d="M9 4H5a2 2 0 00-2 2v12a2 2 0 002 2h4"/><path d="M16 8l4 4-4 4M20 12H9"/>'};
+const ico=(n,s=20,c)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c||'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;flex:none">${IC[n]||IC.star}</svg>`;
+const EM={'📰':'news','🎬':'play','🧠':'help','🛍️':'bag','📱':'phone','🌐':'globe','⭐':'star','📖':'book','🎁':'gift','💰':'coins'};
+const tIco=(i,s=26)=>ico(IC[i]?i:(EM[i]||'star'),s);
+const ICOPT=['star:তারা','globe:ওয়েবসাইট','news:আর্টিকেল','play:ভিডিও','help:কুইজ','bag:অফার','phone:অ্যাপ','gift:গিফট','coins:কয়েন','book:বই','link:লিংক'];
+const icoSel=(id,v)=>`<select id="${id}">${ICOPT.map(o=>{const[a,b]=o.split(':');return `<option value="${a}" ${a===v?'selected':''}>${b}</option>`}).join('')}</select>`;
 const FB=!!FB_CFG;let fs,au,subs=[];
 const K='ptc_demo_v3';
-const TT=[['📰','আর্টিকেল পড়ুন'],['🎬','ভিডিও দেখুন'],['🧠','কুইজ খেলুন'],['🛍️','অফার দেখুন'],['📱','অ্যাপ দেখুন']];
+const TT=[['news','আর্টিকেল পড়ুন'],['play','ভিডিও দেখুন'],['help','কুইজ খেলুন'],['bag','অফার দেখুন'],['phone','অ্যাপ দেখুন']];
 const seed=()=>Array.from({length:20},(_,i)=>{const[ic,n]=TT[i%5];return{id:'t'+(i+1),ord:i,icon:ic,title:n+' #'+(Math.floor(i/5)+1),url:'https://example.com/?task='+(i+1),sec:10+(i%4)*5,pts:10+(i%4)*5,on:1}});
-function sampleRead(){return{id:'r1',ord:20,type:'read',icon:'📰',title:'আর্টিকেল সিরিজ (৩ পেজ)',per:15,sec:45,pts:30,on:1,url:'',pages:[
+function sampleRead(){return{id:'r1',ord:20,type:'read',icon:'news',title:'আর্টিকেল সিরিজ (৩ পেজ)',per:15,sec:45,pts:30,on:1,url:'',pages:[
 {title:'পেজ ১: ভূমিকা',body:'এটা নমুনা আর্টিকেল। অ্যাডমিন প্যানেলের টাস্ক ট্যাব থেকে নিজের আসল লেখা দিয়ে নতুন আর্টিকেল টাস্ক বানান।\n\nপ্রতিটি পেজে কয়েক সেকেন্ড থাকতে হবে এবং নিচে স্ক্রল করে পুরোটা পড়তে হবে।'},
 {title:'পেজ ২: মূল আলোচনা',body:'এখানে বিষয়ের মূল অংশ থাকবে। ভালো ও কাজের লেখা দিলে ইউজার ফিরে আসবে।\n\nনমুনা লেখাটা বদলে নিন।'},
 {title:'পেজ ৩: উপসংহার',body:'শেষ পেজে পৌঁছে "সম্পন্ন করুন" চাপলে পড়ার জন্য পয়েন্ট যোগ হবে।'}]}}
 
-const LV=[[0,'ব্রোঞ্জ','🥉',0],[10,'সিলভার','🥈',10],[30,'গোল্ড','🥇',20],[70,'প্ল্যাটিনাম','💎',30],[150,'ডায়মন্ড','👑',50]];
+const LV=[[0,'ব্রোঞ্জ','#cd7f32',0],[10,'সিলভার','#9ca3af',10],[30,'গোল্ড','#f5b301',20],[70,'প্ল্যাটিনাম','#22c4b8',30],[150,'ডায়মন্ড','#8b5cf6',50]];
 const lvl=n=>{let i=0;LV.forEach((l,k)=>{if((n||0)>=l[0])i=k});return i};
 const def=()=>({s:{name:'Smartpay',rate:100,minW:1000,ref:50,refMax:20,signup:20,cool:24,streak7:50,devLock:1,maint:0,wdOn:1,dailyCap:20,adCode:'',adH:250,maintTitle:'',maintMsg:'',maintEta:'',admin:'admin',apass:'admin123',notice:'প্রতিদিন লগইন করে বোনাস নিন!'},u:[],w:[],l:[],r:[],dev:{},t:[...seed(),sampleRead()]});
 let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}D=D||def();D.r=D.r||[];D.dev=D.dev||{};
@@ -140,10 +177,10 @@ async function findRef(code){if(!code)return null;if(FB){const d=await fs.doc('c
 /* ---------- Auth ---------- */
 function authView(){
  const ref=new URLSearchParams(location.search).get('ref')||'',reg=authMode==='reg';
- return `<div class="hero" style="border-radius:0 0 40px 40px;text-align:center;padding:40px 16px"><div style="font-size:48px">💰</div><b style="font-size:30px">${esc(D.s.name)}</b><div>স্মার্ট টাস্ক • স্মার্ট রিওয়ার্ড • টাকা তুলুন</div></div>
+ return `<div class="hero" style="border-radius:0 0 40px 40px;text-align:center;padding:40px 16px"><div style="margin-bottom:6px">${ico('coins',54)}</div><b style="font-size:30px">${esc(D.s.name)}</b><div>স্মার্ট টাস্ক • স্মার্ট রিওয়ার্ড • টাকা তুলুন</div></div>
  <div class="auth"><div class="card"><div style="text-align:center;margin-bottom:8px">${FB?'':'<span class="mode">ডেমো মোড – ডেটা শুধু এই ব্রাউজারে</span>'}</div>
  <label>ইমেইল বা ইউজারনেম</label><input id="a_u" autocomplete="username" autocapitalize="none">
- ${reg?'<div class="mut" style="margin:-6px 0 10px">💡 আসল ইমেইল দিলে পাসওয়ার্ড ভুলে গেলে রিসেট করতে পারবেন।</div>':''}<label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="a_p" type="password" autocomplete="current-password">
+ <label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="a_p" type="password" autocomplete="current-password">
  ${reg?`<label>রেফার কোড (ঐচ্ছিক)</label><input id="a_r" value="${esc(ref)}">`:''}
  <button style="width:100%" onclick="doAuth()">${reg?'রেজিস্টার করুন':'লগইন'}</button>
  <p style="text-align:center"><a href="#" onclick="authMode='${reg?'login':'reg'}';render();return false">${reg?'একাউন্ট আছে? লগইন':'নতুন একাউন্ট খুলুন'}</a>${reg?'':' · <a href="#" onclick="forgot();return false">পাসওয়ার্ড ভুলে গেছেন?</a>'}</p>
@@ -155,8 +192,8 @@ async function doAuth(){
  try{
   if(!FB&&!isMail&&n===D.s.admin&&p===D.s.apass){adm=true;tab='dash';return render()}
   if(authMode==='reg'){
-   const keys=await devKeys(),by=await findRef(($('#a_r')?.value||'').trim().toUpperCase());let id;
-   if(FB){const c=await au.createUserWithEmailAndPassword(em,p);id=c.user.uid;
+   const keys=await devKeys(),rc=($('#a_r')?.value||'').trim().toUpperCase();let by=FB?null:await findRef(rc),id;
+   if(FB){const c=await au.createUserWithEmailAndPassword(em,p);id=c.user.uid;by=await findRef(rc).catch(()=>null);
     if(D.s.devLock)for(const k of keys){if((await fs.doc('devices/'+k).get()).exists){await c.user.delete();return toast('এই ডিভাইস থেকে আগেই একাউন্ট খোলা হয়েছে')}}}
    else{if(D.u.some(x=>x.name===n))return toast('এই ইউজারনেম আছে');
     if(D.s.devLock&&keys.some(k=>D.dev[k]))return toast('এই ডিভাইস থেকে আগেই একাউন্ট খোলা হয়েছে');id=rid()}
@@ -166,7 +203,7 @@ async function doAuth(){
    if(FB)fs.doc('codes/'+u.code).set({u:id});
    if(u.by)(FB?sv:((c,o)=>D.r.push(o)))('refs',{id,by:u.by,ok:0,paid:0});
    if(!FB){D.u.push(u);me=id}
-   sv('users',u);if(D.s.signup)log(id,'সাইনআপ বোনাস',D.s.signup);tab='home';toast('স্বাগতম! 🎉');return render()}
+   sv('users',u);if(D.s.signup)log(id,'সাইনআপ বোনাস',D.s.signup);tab='home';toast('স্বাগতম!');return render()}
   if(FB)await au.signInWithEmailAndPassword(em,p);
   else{const u=D.u.find(x=>x.name===n&&x.pass===p);if(!u)return toast('ইউজারনেম/পাসওয়ার্ড ভুল');me=u.id;tab='home';render()}
  }catch(e){toast(e.code==='auth/email-already-in-use'?'এই ইউজারনেম আছে':e.code==='auth/invalid-credential'?'ইউজারনেম/পাসওয়ার্ড ভুল':(e.message||'সমস্যা হয়েছে'))}}
@@ -212,7 +249,7 @@ function claim(){const u=U();if(!u||!u.pend)return;const t=D.t.find(x=>x.id===u.
  const g=Math.round(t.pts*(1+LV[lvl(u.tasks)][3]/100)),first=!u.tasks,old=lvl(u.tasks);
  u.pts+=g;u.tasks=(u.tasks||0)+1;u.done[t.id]=Date.now();u.pend=null;log(u.id,'টাস্ক: '+t.title,g);
  if(first&&u.by){if(FB)sv('refs',{id:u.id,by:u.by,ok:1});else{const r=D.r.find(x=>x.id===u.id);if(r)r.ok=1}}
- sv('users',u);boom();toast('+'+g+' পয়েন্ট! '+(lvl(u.tasks)>old?'🎉 লেভেল আপ: '+LV[lvl(u.tasks)][1]:''));render()}
+ sv('users',u);boom();toast('+'+g+' পয়েন্ট! '+(lvl(u.tasks)>old?'লেভেল আপ: '+LV[lvl(u.tasks)][1]:''));render()}
 const cancelTask=()=>{const u=U();u.pend=null;sv('users',u);render()};
 function daily(){const u=U(),t=today();if(u.last===t)return toast('আজকের বোনাস নেওয়া হয়েছে');
  const y=new Date(Date.now()-864e5).toISOString().slice(0,10);u.streak=u.last===y?(u.streak||0)+1:1;u.last=t;
@@ -233,7 +270,7 @@ function wdSet(id,st){const w=D.w.find(x=>x.id===id);if(!w||w.st!=='pending')ret
 
 /* ---------- বিজ্ঞাপন (AdSense) ---------- */
 const adFrame=c=>`<iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" srcdoc="${esc('<body style="margin:0;display:flex;justify-content:center">'+c+'</body>')}" style="width:100%;height:${+D.s.adH||250}px;border:0;margin-bottom:14px"></iframe>`;
-const adBox=()=>D.s.adCode?adFrame(D.s.adCode):ADS.client&&ADS.slot?`<ins class="adsbygoogle" style="display:block;margin-bottom:12px" data-ad-client="${esc(ADS.client)}" data-ad-slot="${esc(ADS.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`:'<div class="ad">📢 বিজ্ঞাপনের জায়গা (AdSense)</div>';
+const adBox=()=>D.s.adCode?adFrame(D.s.adCode):ADS.client&&ADS.slot?`<ins class="adsbygoogle" style="display:block;margin-bottom:12px" data-ad-client="${esc(ADS.client)}" data-ad-slot="${esc(ADS.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`:'<div class="ad">বিজ্ঞাপনের জায়গা (AdSense)</div>';
 function pushAds(){if(!ADS.client)return;if(!window._ads){window._ads=1;const s=document.createElement('script');s.async=1;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+ADS.client;document.head.appendChild(s)}
  document.querySelectorAll('ins.adsbygoogle').forEach(()=>{try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}})}
 
@@ -242,42 +279,42 @@ const stBn=s=>({pending:'পেন্ডিং',paid:'পরিশোধিত',
 const stTag=s=>`<span class="tag ${s==='paid'?'ok':s==='rejected'?'bad':''}">${stBn(s)}</span>`;
 function userView(){
  const u=U();if(!u)return '<p style="text-align:center;padding:40px">লোড হচ্ছে…</p>';
- if(u.banned)return `<div class="auth"><div class="card">🚫 আপনার একাউন্ট ব্লক করা হয়েছে।<br><br><button onclick="logout()">লগআউট</button></div></div>`;
- if(D.s.maint)return '<div class="auth"><div class="card" style="text-align:center">🛠 সাইট এখন মেইনটেন্যান্সে আছে। একটু পরে আসুন।<br><br><button onclick="logout()">লগআউট</button></div></div>';
+ if(u.banned)return `<div class="auth"><div class="card">${ico('ban',22,'#ef4444')} আপনার একাউন্ট ব্লক করা হয়েছে।<br><br><button onclick="logout()">লগআউট</button></div></div>`;
+ if(D.s.maint)return '<div class="auth"><div class="card" style="text-align:center">সাইট এখন মেইনটেন্যান্সে আছে। একটু পরে আসুন।<br><br><button onclick="logout()">লগআউট</button></div></div>';
  collect();const L=lvl(u.tasks),nx=LV[L+1],pr=nx?Math.min(100,((u.tasks||0)-LV[L][0])/(nx[0]-LV[L][0])*100):100;
  const link=location.href.split('?')[0].split('#')[0]+'?ref='+u.code,paid=D.r.filter(r=>r.paid).length,got=u.last===today();let body='';
  if(tab==='home'){let pend='';
-  if(u.pend){const t=D.t.find(x=>x.id===u.pend.tid);if(t)pend=`<div class="card" style="border:2px solid var(--pri)"><b>${t.icon||'⭐'} ${esc(t.title)}</b><p class="mut" id="cd"></p><div class="bar"><i id="pb"></i></div><br>
-   <button id="cl" onclick="claim()" disabled>🎁 পয়েন্ট নিন</button> <button class="sec" onclick="startTask('${t.id}')">লিংক আবার খুলুন</button> <button class="sec" onclick="cancelTask()">বাতিল</button></div>`}
-  body=`<div class="card row"><div><b>🔥 ডেইলি বোনাস</b><div class="mut">স্ট্রিক: ${u.streak||0} দিন · ৭ দিন পূর্ণ হলে +${D.s.streak7}</div></div><button class="${got?'sec':'ok'}" ${got?'disabled':''} onclick="daily()">${got?'নেওয়া হয়েছে ✓':'বোনাস নিন'}</button></div>`+pend+
+  if(u.pend){const t=D.t.find(x=>x.id===u.pend.tid);if(t)pend=`<div class="card" style="border:2px solid var(--pri)"><b>${tIco(t.icon,20)} ${esc(t.title)}</b><p class="mut" id="cd"></p><div class="bar"><i id="pb"></i></div><br>
+   <button id="cl" onclick="claim()" disabled>${ico('gift',18)} পয়েন্ট নিন</button> <button class="sec" onclick="startTask('${t.id}')">লিংক আবার খুলুন</button> <button class="sec" onclick="cancelTask()">বাতিল</button></div>`}
+  body=`<div class="card row"><div><b>${ico('flame',18,'#f97316')} ডেইলি বোনাস</b><div class="mut">স্ট্রিক: ${u.streak||0} দিন · ৭ দিন পূর্ণ হলে +${D.s.streak7}</div></div><button class="${got?'sec':'ok'}" ${got?'disabled':''} onclick="daily()">${got?'নেওয়া হয়েছে ✓':'বোনাস নিন'}</button></div>`+pend+
   D.t.filter(t=>t.on).map((t,i)=>{const l=u.done[t.id],dn=l&&Date.now()-l<D.s.cool*3600e3,g=Math.round(t.pts*(1+LV[L][3]/100));
-   return (i&&i%6===0?adBox():'')+`<div class="card task row" style="--h:${(i*47)%360}"><div class="row" style="justify-content:flex-start"><div class="ic">${t.icon||'⭐'}</div><div><b>${esc(t.title)}</b><div class="mut">${t.type==='read'?'📖 '+(t.pages||[]).length+' পেজ · ':''}⏱ ${t.sec} সেকেন্ড · ⭐ ${g} পয়েন্ট</div></div></div>
+   return (i&&i%6===0?adBox():'')+`<div class="card task row" style="--h:${(i*47)%360}"><div class="row" style="justify-content:flex-start"><div class="ic">${tIco(t.icon)}</div><div><b>${esc(t.title)}</b><div class="mut">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ · ':''}${ico('clock',15)} ${t.sec} সেকেন্ড · ${ico('star',15,'#f59e0b')} ${g} পয়েন্ট</div></div></div>
    <button ${dn?'disabled':''} onclick="startTask('${t.id}')">${dn?'সম্পন্ন ✓':'শুরু করুন'}</button></div>`}).join('')||'<div class="card mut">এখন কোনো টাস্ক নেই</div>'}
- if(tab==='ref')body=`<div class="card"><b>🎁 আপনার রেফার কোড: ${u.code}</b><p class="mut">বন্ধু রেজিস্টার করে প্রথম টাস্ক শেষ করলে আপনি পাবেন ${D.s.ref} পয়েন্ট। সর্বোচ্চ ${D.s.refMax} জন (পেয়েছেন ${paid} জনের)।</p>
-  <input readonly value="${esc(link)}" onclick="this.select()"><button onclick="navigator.clipboard?.writeText('${esc(link)}');toast('কপি হয়েছে')">📋 লিংক কপি</button></div>
+ if(tab==='ref')body=`<div class="card"><b>${ico('gift',18,'#ec4899')} আপনার রেফার কোড: ${u.code}</b><p class="mut">বন্ধু রেজিস্টার করে প্রথম টাস্ক শেষ করলে আপনি পাবেন ${D.s.ref} পয়েন্ট। সর্বোচ্চ ${D.s.refMax} জন (পেয়েছেন ${paid} জনের)।</p>
+  <input readonly value="${esc(link)}" onclick="this.select()"><button onclick="navigator.clipboard?.writeText('${esc(link)}');toast('কপি হয়েছে')">${ico('copy',17)} লিংক কপি</button></div>
   <div class="card"><b>মোট রেফারাল: ${D.r.length}</b></div>`+adBox();
  if(tab==='wd')body=`<div class="card"><p class="mut">ন্যূনতম ${D.s.minW} পয়েন্ট (${tk(D.s.minW)}) · ${D.s.rate} পয়েন্ট = ৳১ · অ্যাডমিন যাচাই করে পেমেন্ট দেবেন</p>
   <label>পরিমাণ (পয়েন্ট)</label><input id="w_a" type="number" value="${D.s.minW}"><label>মাধ্যম</label><select id="w_m"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
-  <label>নম্বর</label><input id="w_n" inputmode="numeric" placeholder="01XXXXXXXXX"><button onclick="doWd()">💸 উইথড্র করুন</button></div>
+  <label>নম্বর</label><input id="w_n" inputmode="numeric" placeholder="01XXXXXXXXX"><button onclick="doWd()">${ico('wallet',18)} উইথড্র করুন</button></div>
   <div class="card tbl"><table><tr><th>তারিখ</th><th>পরিমাণ</th><th>মাধ্যম</th><th>স্ট্যাটাস</th></tr>${D.w.filter(w=>w.u===u.id).map(w=>`<tr><td>${fmt(w.at)}</td><td>${w.amt}</td><td>${w.m}</td><td>${stTag(w.st)}</td></tr>`).join('')||'<tr><td colspan=4 class="mut">কিছু নেই</td></tr>'}</table></div>`;
  if(tab==='hist')body=`<div class="card tbl"><table><tr><th>তারিখ</th><th>বিবরণ</th><th>পয়েন্ট</th></tr>${D.l.filter(l=>l.u===u.id).slice(0,50).map(l=>`<tr><td>${fmt(l.at)}</td><td>${esc(l.txt)}</td><td style="color:var(${l.p>0?'--ok':'--bad'})">${l.p>0?'+':''}${l.p}</td></tr>`).join('')||'<tr><td colspan=3 class="mut">কিছু নেই</td></tr>'}</table></div>`;
- const nav=[['home','🏠','টাস্ক'],['ref','🎁','রেফার'],['wd','💸','উইথড্র'],['hist','📜','হিস্টোরি']];
- return `<div class="hero"><div class="r"><b>👋 ${esc(u.name)}</b><span><span class="badge">${LV[L][2]} ${LV[L][1]}${LV[L][3]?' · +'+LV[L][3]+'%':''}</span> <button class="sec" onclick="logout()" style="padding:4px 10px">⎋</button></span></div>
+ const nav=[['home','home','টাস্ক'],['ref','gift','রেফার'],['wd','wallet','উইথড্র'],['hist','history','হিস্টোরি']];
+ return `<div class="hero"><div class="r"><b>${esc(u.name)}</b><span><span class="badge">${ico('medal',16,LV[L][2])} ${LV[L][1]}${LV[L][3]?' · +'+LV[L][3]+'%':''}</span> <button class="sec" onclick="logout()" style="padding:4px 10px">${ico('logout',16)}</button></span></div>
   <b class="big">${u.pts} <small style="font-size:16px">পয়েন্ট</small></b><div>≈ ${tk(u.pts)}</div>
-  <div style="margin-top:12px" class="bar"><i style="width:${pr}%"></i></div><div style="font-size:12px;margin-top:4px">${nx?`পরের লেভেল (${nx[2]} ${nx[1]}): আরও ${nx[0]-(u.tasks||0)}টি টাস্ক`:'সর্বোচ্চ লেভেল! 👑'}</div></div>
-  <div class="wrap"><div class="grid"><div class="stat g1"><b>🔥 ${u.streak||0}</b><span>স্ট্রিক</span></div><div class="stat g2"><b>✅ ${u.tasks||0}</b><span>টাস্ক সম্পন্ন</span></div><div class="stat g3"><b>👥 ${D.r.length}</b><span>রেফারাল</span></div></div>
-  <div class="card mut">📢 ${esc(D.s.notice)}</div>${tab==='home'?adBox():''}${body}</div>
-  <div class="bn">${nav.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';render()"><span>${i}</span>${n}</button>`).join('')}</div>`}
+  <div style="margin-top:12px" class="bar"><i style="width:${pr}%"></i></div><div style="font-size:12px;margin-top:4px">${nx?`পরের লেভেল (${nx[1]}): আরও ${nx[0]-(u.tasks||0)}টি টাস্ক`:'সর্বোচ্চ লেভেলে পৌঁছে গেছেন'}</div></div>
+  <div class="wrap"><div class="grid"><div class="stat g1"><b>${ico('flame',22)} ${u.streak||0}</b><span>স্ট্রিক</span></div><div class="stat g2"><b>${ico('check',22)} ${u.tasks||0}</b><span>টাস্ক সম্পন্ন</span></div><div class="stat g3"><b>${ico('users',22)} ${D.r.length}</b><span>রেফারাল</span></div></div>
+  <div class="card mut">${ico('megaphone',16)} ${esc(D.s.notice)}</div>${tab==='home'?adBox():''}${body}</div>
+  <div class="bn">${nav.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';render()"><span>${ico(i,24)}</span>${n}</button>`).join('')}</div>`}
 
 /* ---------- Admin view ---------- */
 function adminView(){
- const tabs={dash:'📊 ড্যাশবোর্ড',tasks:'📝 টাস্ক',users:'👥 ইউজার',wd:'💸 উইথড্র',set:'⚙️ সেটিংস'};let b='';
+ const tabs={dash:ico('chart',16)+' ড্যাশবোর্ড',tasks:ico('edit',16)+' টাস্ক',users:ico('users',16)+' ইউজার',wd:ico('wallet',16)+' উইথড্র',set:ico('gear',16)+' সেটিংস'};let b='';
  if(tab==='dash')b=`<div class="grid"><div class="stat g1"><b>${D.u.length}</b><span>মোট ইউজার</span></div><div class="stat g2"><b>${D.t.length}</b><span>টাস্ক</span></div><div class="stat g3"><b>${D.u.reduce((a,u)=>a+(u.pts||0),0)}</b><span>ইউজারদের মোট পয়েন্ট</span></div><div class="stat g4"><b>${D.w.filter(w=>w.st==='pending').length}</b><span>পেন্ডিং উইথড্র</span></div></div>`;
- if(tab==='tasks')b=`<div class="card"><b>🔗 ওয়েবসাইট ভিজিট / লিংক টাস্ক</b><div class="grid"><div><label>আইকন (ইমোজি)</label><input id="n_i" value="⭐"></div><div><label>সময় (সেকেন্ড)</label><input id="n_s" type="number" value="10"></div><div><label>পয়েন্ট</label><input id="n_p" type="number" value="10"></div></div>
-  <label>টাইটেল</label><input id="n_t"><label>লিংক (আপনার নিজের কনটেন্ট পেজ)</label><input id="n_u" placeholder="https://"><button onclick="addTask()">যোগ করুন</button> <button class="sec" onclick="if(confirm('২০টি ডিফল্ট টাস্ক বসবে (একই আইডি থাকলে বদলে যাবে)'))seedTasks()">২০টি ডিফল্ট টাস্ক সিড</button></div><div class="card"><b>📖 নতুন আর্টিকেল টাস্ক (প্রতি পেজে আপনার অ্যাড)</b><div class="grid"><div><label>আইকন</label><input id="r_i" value="📰"></div><div><label>প্রতি পেজে সেকেন্ড</label><input id="r_s" type="number" value="15"></div><div><label>মোট পয়েন্ট</label><input id="r_p" type="number" value="20"></div></div><label>টাইটেল</label><input id="r_t"><label>পেজগুলো (প্রতি পেজের প্রথম লাইন শিরোনাম; পেজ আলাদা করতে একটা লাইনে --- লিখুন)</label><textarea id="r_b" rows="8" placeholder="পেজ ১ শিরোনাম&#10;লেখা...&#10;---&#10;পেজ ২ শিরোনাম&#10;লেখা..."></textarea><label>এই টাস্কের আলাদা Adsterra কোড (ঐচ্ছিক, ফাঁকা রাখলে সেটিংসের কোড দেখাবে)</label><textarea id="r_a" rows="3"></textarea><button onclick="addRead()">আর্টিকেল টাস্ক যোগ করুন</button></div>`
-  +D.t.map(t=>`<div class="card row"><div><b>${t.icon||''} ${esc(t.title)}</b><div class="mut" style="word-break:break-all">${t.type==='read'?'📖 '+(t.pages||[]).length+' পেজ × '+t.per+'s':esc(t.url)}<br>${t.sec}s · ${t.pts} পয়েন্ট · <span class="tag ${t.on?'ok':'bad'}">${t.on?'চালু':'বন্ধ'}</span></div></div>
+ if(tab==='tasks')b=`<div class="card"><b>${ico('link',18)} ওয়েবসাইট ভিজিট / লিংক টাস্ক</b><div class="grid"><div><label>আইকন</label>${icoSel('n_i','globe')}</div><div><label>সময় (সেকেন্ড)</label><input id="n_s" type="number" value="10"></div><div><label>পয়েন্ট</label><input id="n_p" type="number" value="10"></div></div>
+  <label>টাইটেল</label><input id="n_t"><label>লিংক (আপনার নিজের কনটেন্ট পেজ)</label><input id="n_u" placeholder="https://"><button onclick="addTask()">যোগ করুন</button> <button class="sec" onclick="if(confirm('২০টি ডিফল্ট টাস্ক বসবে (একই আইডি থাকলে বদলে যাবে)'))seedTasks()">২০টি ডিফল্ট টাস্ক সিড</button></div><div class="card"><b>${ico('book',18)} নতুন আর্টিকেল টাস্ক (প্রতি পেজে আপনার অ্যাড)</b><div class="grid"><div><label>আইকন</label>${icoSel('r_i','news')}</div><div><label>প্রতি পেজে সেকেন্ড</label><input id="r_s" type="number" value="15"></div><div><label>মোট পয়েন্ট</label><input id="r_p" type="number" value="20"></div></div><label>টাইটেল</label><input id="r_t"><label>পেজগুলো (প্রতি পেজের প্রথম লাইন শিরোনাম; পেজ আলাদা করতে একটা লাইনে --- লিখুন)</label><textarea id="r_b" rows="8" placeholder="পেজ ১ শিরোনাম&#10;লেখা...&#10;---&#10;পেজ ২ শিরোনাম&#10;লেখা..."></textarea><label>এই টাস্কের আলাদা Adsterra কোড (ঐচ্ছিক, ফাঁকা রাখলে সেটিংসের কোড দেখাবে)</label><textarea id="r_a" rows="3"></textarea><button onclick="addRead()">আর্টিকেল টাস্ক যোগ করুন</button></div>`
+  +D.t.map(t=>`<div class="card row"><div><b>${tIco(t.icon,18)} ${esc(t.title)}</b><div class="mut" style="word-break:break-all">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ × '+t.per+'s':esc(t.url)}<br>${t.sec}s · ${t.pts} পয়েন্ট · <span class="tag ${t.on?'ok':'bad'}">${t.on?'চালু':'বন্ধ'}</span></div></div>
   <div><button class="sec" onclick="editTask('${t.id}')">এডিট</button> <button class="sec" onclick="togTask('${t.id}')">${t.on?'বন্ধ':'চালু'}</button> <button class="bad" onclick="delTask('${t.id}')">মুছুন</button></div></div>`).join('');
- if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}${u.email?'<div class="mut">'+esc(u.email)+'</div>':''}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${LV[lvl(u.tasks)][2]}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
+ if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}${u.email?'<div class="mut">'+esc(u.email)+'</div>':''}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${ico('medal',18,LV[lvl(u.tasks)][2])}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
   <td><button class="sec" onclick="adjPts('${u.id}')">পয়েন্ট</button> <button class="sec" onclick="resetTasks('${u.id}')">টাস্ক রিসেট</button> <button class="sec" onclick="ban('${u.id}')">${u.banned?'আনব্লক':'ব্লক'}</button></td></tr>`).join('')||'<tr><td colspan=7 class="mut">কোনো ইউজার নেই</td></tr>'}</table></div>`;
  if(tab==='wd')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>পয়েন্ট (৳)</th><th>মাধ্যম</th><th>নম্বর</th><th>স্ট্যাটাস</th><th></th></tr>${D.w.map(w=>`<tr><td>${esc(w.uname||D.u.find(x=>x.id===w.u)?.name)}</td><td>${w.amt} (${tk(w.amt)})</td><td>${w.m}</td><td>${esc(w.no)}</td><td>${stTag(w.st)}</td>
   <td>${w.st==='pending'?`<button class="ok" onclick="wdSet('${w.id}','paid')">পরিশোধ</button> <button class="bad" onclick="wdSet('${w.id}','rejected')">বাতিল</button>`:''}</td></tr>`).join('')||'<tr><td colspan=6 class="mut">কোনো রিকোয়েস্ট নেই</td></tr>'}</table></div>`;
@@ -285,9 +322,9 @@ function adminView(){
   b=`<div class="card"><div class="grid">${f('name','সাইটের নাম','text')}${f('rate','কত পয়েন্টে ৳১')}${f('minW','ন্যূনতম উইথড্র (পয়েন্ট)')}${f('ref','রেফার বোনাস')}${f('refMax','সর্বোচ্চ রেফার বোনাস (জন)')}${f('signup','সাইনআপ বোনাস')}${f('cool','টাস্ক রিপিট (ঘণ্টা)')}${f('streak7','৭ দিনের স্ট্রিক বোনাস')}
   <div><label>ডিভাইস লক</label><select id="s_devLock"><option value="1" ${s.devLock?'selected':''}>চালু</option><option value="0" ${s.devLock?'':'selected'}>বন্ধ (টেস্টের জন্য)</option></select></div><div><label>মেইনটেন্যান্স মোড</label><select id="s_maint"><option value="0" ${s.maint?'':'selected'}>বন্ধ</option><option value="1" ${s.maint?'selected':''}>চালু</option></select></div><div><label>উইথড্র</label><select id="s_wdOn"><option value="1" ${s.wdOn?'selected':''}>চালু</option><option value="0" ${s.wdOn?'':'selected'}>বন্ধ</option></select></div>${f('dailyCap','দৈনিক টাস্ক লিমিট (0 = সীমাহীন)')}</div>
   ${f('notice','নোটিশ','text')}${FB?'':f('admin','অ্যাডমিন ইউজারনেম (ডেমো)','text')+f('apass','অ্যাডমিন পাসওয়ার্ড (ডেমো)','text')}
-  <label>🛠 মেইনটেন্যান্স শিরোনাম</label><input id="s_maintTitle" value="${esc(s.maintTitle||'')}" placeholder="সাইট এখন আপডেট হচ্ছে"><label>🛠 মেইনটেন্যান্স বার্তা (মেইনটেন্যান্স চালু থাকলে ইউজাররা এটা দেখবে)</label><textarea id="s_maintMsg" rows="3" placeholder="আমরা সাইটটিকে আরও ভালো করছি...">${esc(s.maintMsg||'')}</textarea><label>⏰ কখন ফিরবে (ঐচ্ছিক, যেমন: রাত ১০টা)</label><input id="s_maintEta" value="${esc(s.maintEta||'')}"><button class="sec" onclick="mtPrev()" style="margin-bottom:14px">👁 মেইনটেন্যান্স পেজ প্রিভিউ (আগে সেভ করুন)</button><br><label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
+  <label>মেইনটেন্যান্স শিরোনাম</label><input id="s_maintTitle" value="${esc(s.maintTitle||'')}" placeholder="সাইট এখন আপডেট হচ্ছে"><label>মেইনটেন্যান্স বার্তা (মেইনটেন্যান্স চালু থাকলে ইউজাররা এটা দেখবে)</label><textarea id="s_maintMsg" rows="3" placeholder="আমরা সাইটটিকে আরও ভালো করছি...">${esc(s.maintMsg||'')}</textarea><label>কখন ফিরবে (ঐচ্ছিক, যেমন: রাত ১০টা)</label><input id="s_maintEta" value="${esc(s.maintEta||'')}"><button class="sec" onclick="mtPrev()" style="margin-bottom:14px">${ico('eye',16)} মেইনটেন্যান্স পেজ প্রিভিউ (আগে সেভ করুন)</button><br><label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
   <button onclick="saveSet()">সেভ</button> ${FB?'':`<button class="bad" onclick="if(confirm('সব ডেটা মুছবে?')){D=def();sv();logout()}">ডেটা রিসেট</button>`}</div>`}
- return `<div class="hero"><div class="r"><b>🛠 অ্যাডমিন প্যানেল</b><button class="sec" onclick="logout()">লগআউট</button></div></div><div class="wrap"><div class="tabs" style="margin-top:12px">${Object.entries(tabs).map(([k,v])=>`<button class="${tab===k?'':'sec'}" onclick="tab='${k}';render()">${v}</button>`).join('')}</div>${b}</div>`}
+ return `<div class="hero"><div class="r"><b>${ico('gear',20)} অ্যাডমিন প্যানেল</b><button class="sec" onclick="logout()">লগআউট</button></div></div><div class="wrap"><div class="tabs" style="margin-top:12px">${Object.entries(tabs).map(([k,v])=>`<button class="${tab===k?'':'sec'}" onclick="tab='${k}';render()">${v}</button>`).join('')}</div>${b}</div>`}
 const putT=t=>{if(FB)fs.doc('tasks/'+t.id).set(t);else{const i=D.t.findIndex(x=>x.id===t.id);i<0?D.t.push(t):D.t[i]=t;sv()}};
 function addTask(){const t=$('#n_t').value.trim(),u=$('#n_u').value.trim();if(!t||!/^https?:\/\//.test(u))return toast('টাইটেল ও সঠিক লিংক দিন');
  putT({id:rid(),ord:D.t.length,icon:$('#n_i').value||'⭐',title:t,url:u,sec:+$('#n_s').value||10,pts:+$('#n_p').value||1,on:1});render()}
@@ -306,13 +343,13 @@ addEventListener('scroll',()=>{if(rd)rdUp()},{passive:true});
 function readerView(){
  const t=D.t.find(x=>x.id===rd.tid);if(!t||!t.pages){rd=null;return userView()}
  const p=t.pages[rd.i],n=t.pages.length,last=rd.i===n-1;
- const AC=t.adCode||D.s.adCode;const ad=AC?`<iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" srcdoc="${esc('<body style="margin:0;display:flex;justify-content:center">'+AC+'</body>')}" style="width:100%;height:${+D.s.adH||250}px;border:0;margin-bottom:14px"></iframe>`:'<div class="ad">📢 Adsterra অ্যাড এখানে দেখাবে (অ্যাডমিন সেটিংসে অ্যাড কোড বসান)</div>';
- return `<div class="hero"><div class="r"><b>${t.icon||'📰'} ${esc(t.title)}</b><button class="sec" onclick="rdExit()" style="padding:4px 10px">✕</button></div><div style="margin-top:10px" class="bar"><i style="width:${rd.i/n*100}%"></i></div><div style="font-size:13px;margin-top:4px">পেজ ${rd.i+1} / ${n}</div></div>
+ const AC=t.adCode||D.s.adCode;const ad=AC?`<iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" srcdoc="${esc('<body style="margin:0;display:flex;justify-content:center">'+AC+'</body>')}" style="width:100%;height:${+D.s.adH||250}px;border:0;margin-bottom:14px"></iframe>`:'<div class="ad">Adsterra অ্যাড এখানে দেখাবে (অ্যাডমিন সেটিংসে অ্যাড কোড বসান)</div>';
+ return `<div class="hero"><div class="r"><b>${tIco(t.icon,20)} ${esc(t.title)}</b><button class="sec" onclick="rdExit()" style="padding:4px 10px">${ico('x',16)}</button></div><div style="margin-top:10px" class="bar"><i style="width:${rd.i/n*100}%"></i></div><div style="font-size:13px;margin-top:4px">পেজ ${rd.i+1} / ${n}</div></div>
  <div class="wrap">${ad}<div class="card"><h2 style="margin:0 0 8px">${esc(p.title)}</h2><div style="white-space:pre-wrap">${esc(p.body)}</div></div>
- <div class="card row"><span class="mut" id="rdm"></span><button id="rdb" disabled onclick="rdNext()">${last?'✅ সম্পন্ন করুন':'পরের পেজ →'}</button></div></div>`}
+ <div class="card row"><span class="mut" id="rdm"></span><button id="rdb" disabled onclick="rdNext()">${last?'সম্পন্ন করুন':'পরের পেজ →'}</button></div></div>`}
 function rdUp(){const t=rd&&D.t.find(x=>x.id===rd.tid),b=$('#rdb'),m=$('#rdm');if(!t||!b)return;
  const left=Math.max(0,(t.per||15)-rd.sec),sc=window.scrollY+innerHeight>=document.documentElement.scrollHeight-60;
- b.disabled=left>0||!sc;m.textContent=left?'⏱ '+left+' সেকেন্ড অপেক্ষা করুন':(sc?'পড়া শেষ ✓':'⬇ নিচে স্ক্রল করে পুরোটা পড়ুন')}
+ b.disabled=left>0||!sc;m.textContent=left?left+' সেকেন্ড অপেক্ষা করুন':(sc?'পড়া শেষ ✓':'নিচে স্ক্রল করে পুরোটা পড়ুন')}
 function rdNext(){const t=D.t.find(x=>x.id===rd.tid);
  if(rd.i<t.pages.length-1){rd.i++;rd.sec=0;scrollTo(0,0);render()}
  else{const u=U();u.pend={tid:t.id,start:Date.now()-(t.sec+2)*1000};rd=null;claim()}}
@@ -322,15 +359,15 @@ function addRead(){const t=$('#r_t').value.trim(),per=+$('#r_s').value||15;
  if(!t||pages.length<2)return toast('টাইটেল ও কমপক্ষে ২টা পেজ দিন (পেজ আলাদা করতে --- লিখুন)');
  putT({id:rid(),ord:D.t.length,type:'read',icon:$('#r_i').value||'📰',title:t,pages,per,sec:pages.length*per,pts:+$('#r_p').value||20,on:1,url:'',adCode:($('#r_a').value||'').trim()});render()}
 function maintView(prev){const s=D.s;
- const pr=['🛠️','✨','⚙️','🔧','💫','🚀','✨','🛠️'].map((e,i)=>`<span class="p" style="left:${6+i*12}%;animation-delay:${i*-1.1}s;animation-duration:${8+i%3*2}s">${e}</span>`).join('');
- const btn=prev?'<button class="sec" onclick="document.getElementById(\'mtp\').remove()">✕ প্রিভিউ বন্ধ করুন</button>':'<button class="sec" onclick="logout()">লগআউট</button>';
- return `<div class="mt"><div class="blob b1"></div><div class="blob b2"></div>${pr}<div class="box"><div class="gears"><span class="g-a">⚙️</span><span class="g-b">⚙️</span></div>
- <h1>${esc(s.maintTitle||'সাইট এখন আপডেট হচ্ছে')}</h1><p>${esc(s.maintMsg||'আমরা সাইটটিকে আরও ভালো করছি। অল্প সময় পরে আবার ঘুরে আসুন। আপনার পয়েন্ট সম্পূর্ণ নিরাপদ আছে। 💜')}</p>
- ${s.maintEta?`<div class="eta">⏰ ${esc(s.maintEta)}</div>`:''}<div class="ld"><i></i></div><div style="margin-top:18px">${btn}</div></div></div>`}
+ const pr=['gear','sparkle','wrench','star','sparkle','gear','coins','sparkle'].map((e,i)=>`<span class="p" style="left:${6+i*12}%;animation-delay:${i*-1.1}s;animation-duration:${8+i%3*2}s">${ico(e,22)}</span>`).join('');
+ const btn=prev?'<button class="sec" onclick="document.getElementById(\'mtp\').remove()">প্রিভিউ বন্ধ করুন</button>':'<button class="sec" onclick="logout()">লগআউট</button>';
+ return `<div class="mt"><div class="blob b1"></div><div class="blob b2"></div>${pr}<div class="box"><div class="gears"><span class="g-a">${ico('gear',54)}</span><span class="g-b">${ico('gear',38)}</span></div>
+ <h1>${esc(s.maintTitle||'সাইট এখন আপডেট হচ্ছে')}</h1><p>${esc(s.maintMsg||'আমরা সাইটটিকে আরও ভালো করছি। অল্প সময় পরে আবার ঘুরে আসুন। আপনার পয়েন্ট সম্পূর্ণ নিরাপদ আছে।')}</p>
+ ${s.maintEta?`<div class="eta">${ico('clock',15)} ${esc(s.maintEta)}</div>`:''}<div class="ld"><i></i></div><div style="margin-top:18px">${btn}</div></div></div>`}
 function mtPrev(){const d=document.createElement('div');d.id='mtp';d.innerHTML=maintView(1);document.body.appendChild(d)}
 function resetTasks(id){const u=D.u.find(x=>x.id===id);if(!u||!confirm(u.name+' এর সব টাস্ক আবার চালু করবেন?'))return;
  u.done={};u.pend=null;if(FB)fs.doc('users/'+id).update({done:{},pend:null}).catch(e=>toast(e.code));else sv('users',u);render()}
-function boom(){const e=['🪙','⭐','✨','🎉','💎'];for(let i=0;i<26;i++){const p=document.createElement('i');p.className='cf';p.textContent=e[i%5];p.style.cssText=`left:${Math.random()*100}vw;--dx:${(Math.random()-.5)*220}px;animation-delay:${Math.random()*.35}s;font-size:${16+Math.random()*16}px`;document.body.appendChild(p);setTimeout(()=>p.remove(),2400)}}
+function boom(){const cl=['#f59e0b','#ec4899','#6c4cf1','#10b981','#3b82f6','#ef4444'];for(let i=0;i<34;i++){const p=document.createElement('i');p.className='cf';const w=6+Math.random()*7;p.style.cssText=`left:${Math.random()*100}vw;--dx:${(Math.random()-.5)*240}px;animation-delay:${Math.random()*.35}s;width:${w}px;height:${w*(Math.random()>.5?1:2.2)}px;background:${cl[i%6]};border-radius:${Math.random()>.6?'50%':'2px'}`;document.body.appendChild(p);setTimeout(()=>p.remove(),2400)}}
 /* ---------- Render ---------- */
 function render(soft){
  if(soft&&(rd||['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)))return;
