@@ -177,7 +177,7 @@ function sampleRead(){return{id:'r1',ord:20,type:'read',icon:'news',title:'আ�
 
 const LV=[[0,'ব্রোঞ্জ','#cd7f32',0],[10,'সিলভার','#9ca3af',10],[30,'গোল্ড','#f5b301',20],[70,'প্ল্যাটিনাম','#22c4b8',30],[150,'ডায়মন্ড','#8b5cf6',50]];
 const lvl=n=>{let i=0;LV.forEach((l,k)=>{if((n||0)>=l[0])i=k});return i};
-const def=()=>({s:{name:'My Smartpay',rate:100,minW:1000,ref:50,refMax:20,signup:20,cool:24,streak7:50,devLock:1,maint:0,wdOn:1,dailyCap:20,adCode:'',adH:250,maintTitle:'',maintMsg:'',maintEta:'',admin:'admin',apass:'admin123',notice:'প্রতিদিন লগইন করে বোনাস নিন!'},u:[],w:[],l:[],r:[],m:[],dev:{},t:[...seed(),sampleRead()]});
+const def=()=>({s:{name:'My Smartpay',rate:100,minW:1000,ref:50,refMax:20,signup:20,cool:24,streak7:50,devLock:1,awayCheck:1,maint:0,wdOn:1,dailyCap:20,adCode:'',adH:250,maintTitle:'',maintMsg:'',maintEta:'',admin:'admin',apass:'admin123',notice:'প্রতিদিন লগইন করে বোনাস নিন!'},u:[],w:[],l:[],r:[],m:[],dev:{},t:[...seed(),sampleRead()]});
 let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}D=D||def();D.r=D.r||[];D.m=D.m||[];D.dev=D.dev||{};
 if(FB){D.t=[];D.u=[];D.w=[];D.l=[];D.r=[];D.m=[]}
 let me=null,adm=false,tab='home',authMode='login',tick=null;
@@ -275,15 +275,17 @@ function startTask(id){const u=U(),t=D.t.find(x=>x.id===id);if(!t||!u)return;
  const l=u.done[id];if(l&&Date.now()-l<D.s.cool*3600e3)return toast('এই টাস্ক এখন আবার করা যাবে না');
  if(D.s.dailyCap&&Object.values(u.done).filter(x=>new Date(x).toISOString().slice(0,10)===today()).length>=D.s.dailyCap)return toast('আজকের টাস্ক লিমিট শেষ, কাল আবার আসুন');
  if(t.type==='read'){rd={tid:id,i:0,sec:0};scrollTo(0,0);return render()}
- u.pend={tid:id,start:Date.now()};sv('users',u);window.open(t.url,'_blank','noopener');render()}
+ const keep=trk&&trk.tid===id?trk.away:0;u.pend={tid:id,start:Date.now()};trk={tid:id,start:u.pend.start,open:u.pend.start,away:keep,since:0};trkSave();sv('users',u);window.open(t.url,'_blank','noopener');render()}
 function claim(){const u=U();if(!u||!u.pend)return;const t=D.t.find(x=>x.id===u.pend.tid);
  if(!t){u.pend=null;sv('users',u);return render()}
  if((Date.now()-u.pend.start)/1000<t.sec)return toast('আরও একটু অপেক্ষা করুন');
+ if(t.type!=='read'){trkLoad(u);trkTick();const aw=trkAwaySec();if(aw<t.sec-1)return toast('ওই ওয়েবসাইটে আরও '+Math.ceil(t.sec-aw)+' সেকেন্ড থাকতে হবে')}
+ trkClear();
  const g=Math.round(t.pts*(1+LV[lvl(u.tasks)][3]/100)),first=!u.tasks,old=lvl(u.tasks);
  u.pts+=g;u.tasks=(u.tasks||0)+1;u.done[t.id]=Date.now();u.pend=null;log(u.id,'টাস্ক: '+t.title,g);
  if(first&&u.by){if(FB)refOk(u);else{const r=D.r.find(x=>x.id===u.id);if(r)r.ok=1}}
  sv('users',u);boom();toast('+'+g+' {coin}! '+(lvl(u.tasks)>old?'লেভেল আপ: '+LV[lvl(u.tasks)][1]:''));render()}
-const cancelTask=()=>{const u=U();u.pend=null;sv('users',u);render()};
+const cancelTask=()=>{const u=U();u.pend=null;trkClear();sv('users',u);render()};
 function daily(){const u=U(),t=today();if(u.last===t)return toast('আজকের বোনাস নেওয়া হয়েছে');
  const y=new Date(Date.now()-864e5).toISOString().slice(0,10);u.streak=u.last===y?(u.streak||0)+1:1;u.last=t;
  let b=Math.min(5+u.streak*2,25),x='';if(u.streak%7===0){b+=D.s.streak7;x=' (৭ দিনের স্ট্রিক বোনাস সহ!)'}
@@ -353,7 +355,7 @@ function adminView(){
   <td>${w.st==='pending'?`<button class="ok" onclick="wdSet('${w.id}','paid')">পরিশোধ</button> <button class="bad" onclick="wdSet('${w.id}','rejected')">বাতিল</button>`:''} <button class="sec" onclick="msgModal('${w.u}')">বার্তা</button></td></tr>`).join('')||'<tr><td colspan=6 class="mut">কোনো রিকোয়েস্ট নেই</td></tr>'}</table></div>`;
  if(tab==='set'){const s=D.s,f=(k,l,t='number')=>`<div><label>${l}</label><input id="s_${k}" type="${t}" value="${esc(s[k])}"></div>`;
   b=`<div class="card"><div class="grid">${f('name','সাইটের নাম','text')}${f('rate','কত কয়েনে ৳১')}${f('minW','ন্যূনতম উইথড্র (কয়েন)')}${f('ref','রেফার বোনাস')}${f('refMax','সর্বোচ্চ রেফার বোনাস (জন)')}${f('signup','সাইনআপ বোনাস')}${f('cool','টাস্ক রিপিট (ঘণ্টা)')}${f('streak7','৭ দিনের স্ট্রিক বোনাস')}
-  <div><label>ডিভাইস লক</label><select id="s_devLock"><option value="1" ${s.devLock?'selected':''}>চালু</option><option value="0" ${s.devLock?'':'selected'}>বন্ধ (টেস্টের জন্য)</option></select></div><div><label>মেইনটেন্যান্স মোড</label><select id="s_maint"><option value="0" ${s.maint?'':'selected'}>বন্ধ</option><option value="1" ${s.maint?'selected':''}>চালু</option></select></div><div><label>উইথড্র</label><select id="s_wdOn"><option value="1" ${s.wdOn?'selected':''}>চালু</option><option value="0" ${s.wdOn?'':'selected'}>বন্ধ</option></select></div>${f('dailyCap','দৈনিক টাস্ক লিমিট (0 = সীমাহীন)')}</div>
+  <div><label>ডিভাইস লক</label><select id="s_devLock"><option value="1" ${s.devLock?'selected':''}>চালু</option><option value="0" ${s.devLock?'':'selected'}>বন্ধ (টেস্টের জন্য)</option></select></div><div><label>মেইনটেন্যান্স মোড</label><select id="s_maint"><option value="0" ${s.maint?'':'selected'}>বন্ধ</option><option value="1" ${s.maint?'selected':''}>চালু</option></select></div><div><label>ওয়েবসাইট ভিজিট যাচাই</label><select id="s_awayCheck"><option value="1" ${s.awayCheck===0?'':'selected'}>চালু (অন্য ট্যাবে থাকার সময় গোনা)</option><option value="0" ${s.awayCheck===0?'selected':''}>বন্ধ (শুধু সময় গোনা)</option></select></div><div><label>উইথড্র</label><select id="s_wdOn"><option value="1" ${s.wdOn?'selected':''}>চালু</option><option value="0" ${s.wdOn?'':'selected'}>বন্ধ</option></select></div>${f('dailyCap','দৈনিক টাস্ক লিমিট (0 = সীমাহীন)')}</div>
   ${f('notice','নোটিশ','text')}${FB?'':f('admin','অ্যাডমিন ইউজারনেম (ডেমো)','text')+f('apass','অ্যাডমিন পাসওয়ার্ড (ডেমো)','text')}
   <label>মেইনটেন্যান্স শিরোনাম</label><input id="s_maintTitle" value="${esc(s.maintTitle||'')}" placeholder="সাইট এখন আপডেট হচ্ছে"><label>মেইনটেন্যান্স বার্তা (মেইনটেন্যান্স চালু থাকলে ইউজাররা এটা দেখবে)</label><textarea id="s_maintMsg" rows="3" placeholder="আমরা সাইটটিকে আরও ভালো করছি...">${esc(s.maintMsg||'')}</textarea><label>কখন ফিরবে (ঐচ্ছিক, যেমন: রাত ১০টা)</label><input id="s_maintEta" value="${esc(s.maintEta||'')}"><button class="sec" onclick="mtPrev()" style="margin-bottom:14px">${ico('eye',16)} মেইনটেন্যান্স পেজ প্রিভিউ (আগে সেভ করুন)</button><br><label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
   <button onclick="saveSet()">সেভ</button> ${FB?'':`<button class="bad" onclick="if(confirm('সব ডেটা মুছবে?')){D=def();sv();logout()}">ডেটা রিসেট</button>`}</div>`}
@@ -368,7 +370,7 @@ const ban=id=>{const u=D.u.find(x=>x.id===id);u.banned=u.banned?0:1;sv('users',u
 function adjPts(id){const u=D.u.find(x=>x.id===id),v=parseInt(prompt('কয়েন যোগ/বিয়োগ (যেমন 50 বা -50)','0'));if(!v)return;u.pts=Math.max(0,u.pts+v);log(id,'অ্যাডমিন অ্যাডজাস্ট',v);sv('users',u);render()}
 function seedTasks(){[...seed(),sampleRead()].forEach(putT);if(FB)saveSet(1);render()}
 function saveSet(q){const s=D.s;if(!q){['name','notice','admin','apass'].forEach(k=>{const e=$('#s_'+k);if(e)s[k]=e.value.trim()||s[k]});
- ['rate','minW','ref','refMax','signup','cool','streak7','dailyCap'].forEach(k=>s[k]=Math.max(0,+$('#s_'+k).value)||(k==='rate'?100:0));s.devLock=+$('#s_devLock').value;s.maint=+$('#s_maint').value;s.wdOn=+$('#s_wdOn').value;s.adCode=$('#s_adCode').value.trim();s.adH=+$('#s_adH').value||250;s.maintTitle=$('#s_maintTitle').value.trim();s.maintMsg=$('#s_maintMsg').value.trim();s.maintEta=$('#s_maintEta').value.trim()}
+ ['rate','minW','ref','refMax','signup','cool','streak7','dailyCap'].forEach(k=>s[k]=Math.max(0,+$('#s_'+k).value)||(k==='rate'?100:0));s.devLock=+$('#s_devLock').value;s.maint=+$('#s_maint').value;s.wdOn=+$('#s_wdOn').value;s.awayCheck=+$('#s_awayCheck').value;s.adCode=$('#s_adCode').value.trim();s.adH=+$('#s_adH').value||250;s.maintTitle=$('#s_maintTitle').value.trim();s.maintMsg=$('#s_maintMsg').value.trim();s.maintEta=$('#s_maintEta').value.trim()}
  if(FB){const c={...s};delete c.admin;delete c.apass;fs.doc('config/main').set(c,{merge:true})}else sv();if(!q){toast('সেভ হয়েছে');render()}}
 
 let rd=null;
@@ -402,6 +404,19 @@ function msgModal(uid){const u=D.u.find(x=>x.id===uid);if(!u)return;
 function sendMsg(uid){const t=$('#mt_t').value.trim();if(!t)return toast('বার্তা লিখুন');
  const m={id:rid(),to:uid,text:t,at:Date.now(),read:0};if(!FB)D.m.unshift(m);sv('messages',m);$('#mm').remove();toast('বার্তা পাঠানো হয়েছে')}
 async function refOk(u){const r=fs.doc('refs/'+u.id);try{const d=await r.get();if(!d.exists)await r.set({id:u.id,by:u.by,uname:u.name,ok:0,paid:0});await r.update({ok:1})}catch(e){toast('রেফার আপডেট হয়নি: '+(e.code||''))}}
+let trk=null;
+const trkKey=()=>'ptc_trk_'+me;
+const trkSave=()=>{try{localStorage.setItem(trkKey(),JSON.stringify({tid:trk.tid,start:trk.start,open:trk.open,away:trk.away,since:trk.since}))}catch(e){}};
+function trkClear(){trk=null;try{localStorage.removeItem(trkKey())}catch(e){}}
+function trkLoad(u){if(trk&&trk.tid===u.pend.tid&&trk.start===u.pend.start)return;let o=null;try{o=JSON.parse(localStorage.getItem(trkKey()))}catch(e){}
+ trk=o&&o.tid===u.pend.tid&&o.start===u.pend.start?o:{tid:u.pend.tid,start:u.pend.start,open:u.pend.start,away:0,since:0}}
+function trkTick(){if(!trk)return;const now=Date.now();
+ if(document.hidden){if(!trk.since&&!trk.skip){if(now-trk.open<=30000)trk.since=now;else trk.skip=1}}
+ else{if(trk.since){trk.away+=(now-trk.since)/1000;trk.since=0}trk.skip=0}
+ trkSave()}
+function trkAwaySec(){const u=U();if(!D.s.awayCheck)return u&&u.pend?(Date.now()-u.pend.start)/1000:0;return trk?trk.away+(trk.since?(Date.now()-trk.since)/1000:0):0}
+const trkEvt=()=>{const u=me&&!adm&&U();if(u&&u.pend){trkLoad(u);trkTick()}};
+document.addEventListener('visibilitychange',trkEvt);addEventListener('pagehide',trkEvt);addEventListener('pageshow',trkEvt);
 function maintView(prev){const s=D.s;
  const pr=['gear','sparkle','wrench','star','sparkle','gear','coins','sparkle'].map((e,i)=>`<span class="p" style="left:${6+i*12}%;animation-delay:${i*-1.1}s;animation-duration:${8+i%3*2}s">${ico(e,22)}</span>`).join('');
  const btn=prev?'<button class="sec" onclick="document.getElementById(\'mtp\').remove()">প্রিভিউ বন্ধ করুন</button>':'<button class="sec" onclick="logout()">লগআউট</button>';
@@ -417,8 +432,9 @@ function render(soft){
  if(soft&&(rd||['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)))return;
  $('#app').innerHTML=adm?adminView():me?(D.s.maint?maintView():rd?readerView():userView()):authView();
  clearInterval(tick);const u=me&&!adm&&U();if(rd){tick=setInterval(()=>{if(!document.hidden)rd.sec++;rdUp()},1000);rdUp()}
- if(u&&u.pend&&tab==='home'){const t=D.t.find(x=>x.id===u.pend.tid);if(t){const up=()=>{const el=(Date.now()-u.pend.start)/1000,left=Math.max(0,Math.ceil(t.sec-el)),cd=$('#cd');if(!cd)return;
-  cd.textContent=left?`নতুন ট্যাবে ${t.sec} সেকেন্ড থাকুন — বাকি: ${left}s`:'সময় শেষ! এখন পুরস্কার নিন।';$('#pb').style.width=Math.min(100,el/t.sec*100)+'%';$('#cl').disabled=left>0;if(!left)clearInterval(tick)};up();tick=setInterval(up,500)}}
+ if(u&&u.pend&&tab==='home'){const t=D.t.find(x=>x.id===u.pend.tid);if(t){trkLoad(u);const up=()=>{trkTick();const aw=trkAwaySec(),left=Math.max(0,Math.ceil(t.sec-aw)),cd=$('#cd');if(!cd)return;
+  cd.textContent=left?(aw<1?`লিংক খুলে ওই ওয়েবসাইটে ${t.sec} সেকেন্ড থাকুন, তারপর এখানে ফিরে আসুন`:`আরও ${left} সেকেন্ড ওই ওয়েবসাইটে থাকতে হবে`):'যাচাই সম্পন্ন! এখন পুরস্কার নিন।';
+  $('#pb').style.width=Math.min(100,aw/t.sec*100)+'%';$('#cl').disabled=left>0};up();tick=setInterval(up,1000)}}
  pushAds()}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me&&!adm&&U()?.pend&&tab==='home'&&!rd)render()});
 boot();
