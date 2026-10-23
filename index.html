@@ -97,9 +97,23 @@ th,td{padding:10px 8px;border-bottom:1px solid var(--bd);text-align:left;white-s
 .bal span{font-size:15px;opacity:.95;font-weight:700}
 .bal em{font-style:normal;font-size:13px;background:#ffffff2e;border-radius:99px;padding:2px 10px}
 .hero .bar{height:7px}.hero .nl{font-size:12px;margin-top:6px;opacity:.95}
+.coin{filter:drop-shadow(0 0 6px #fbbf2499);overflow:visible}
+.coin .sh{animation:cshine 3s ease-in-out infinite}
+.coin .tw{animation:ctw 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes cshine{0%{transform:translateX(0)}55%,100%{transform:translateX(46px)}}
+@keyframes ctw{0%,100%{transform:scale(0);opacity:0}50%{transform:scale(1);opacity:1}}
+.av{width:62px;height:62px;padding:3px;background:conic-gradient(from 200deg,var(--lc,#fff),#ffffffaa,var(--lc,#fff));box-shadow:0 0 0 4px #ffffff26,0 6px 16px #0003}
+.av i{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#ffffff4d,#ffffff14);color:#fff;font-style:normal}
+.hn{gap:2px}
+.hn .nm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:100%}
+.hn .nm b{font-size:24px;font-weight:800;line-height:1.15;text-shadow:0 2px 0 #0002;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hn .badge{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;padding:2px 10px 2px 7px;background:linear-gradient(180deg,#ffffff4d,#ffffff1c);border:1px solid #ffffff70}
+.hn small{font-size:12px;opacity:.92}
+.bal{gap:10px}.bal b{font-size:42px;letter-spacing:-1px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset=".35" stop-color="#fbbf24"/><stop offset=".7" stop-color="#d97706"/><stop offset="1" stop-color="#fcd34d"/></linearGradient><radialGradient id="gci" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#fff7c2"/><stop offset=".5" stop-color="#fcc934"/><stop offset="1" stop-color="#e8940c"/></radialGradient><clipPath id="gcc"><circle cx="12" cy="12" r="11.4"/></clipPath></defs></svg>
 <div id="app"></div><div id="toast"></div>
 <script>
 /* ======== কনফিগারেশন (নিজের তথ্য বসান) ======== */
@@ -148,7 +162,7 @@ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/>',
 logout:'<path d="M9 4H5a2 2 0 00-2 2v12a2 2 0 002 2h4"/><path d="M16 8l4 4-4 4M20 12H9"/>'};
 const ico=(n,s=20,c)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c||'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;flex:none">${IC[n]||IC.star}</svg>`;
 const EM={'📰':'news','🎬':'play','🧠':'help','🛍️':'bag','📱':'phone','🌐':'globe','⭐':'star','📖':'book','🎁':'gift','💰':'coins'};
-const spCoin=(s=28)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" style="vertical-align:-${s>20?8:4}px;flex:none"><circle cx="12" cy="12" r="11" fill="#fbbf24"/><circle cx="12" cy="12" r="8.6" fill="none" stroke="#b45309" stroke-width="1.4"/><text x="12" y="15.4" text-anchor="middle" font-size="8.6" font-weight="800" fill="#92400e" font-family="sans-serif">SP</text></svg>`;
+const spCoin=(s=28)=>`<svg class="coin" viewBox="0 0 24 24" width="${s}" height="${s}" style="vertical-align:-${Math.round(s*.22)}px;flex:none"><circle cx="12" cy="12" r="11.6" fill="url(#gcg)"/><circle cx="12" cy="12" r="9.4" fill="url(#gci)" stroke="#b45309" stroke-width=".7"/><circle cx="12" cy="12" r="8.2" fill="none" stroke="#fff3b0" stroke-width=".4" stroke-dasharray="1.2 1.2" opacity=".8"/><text x="12" y="15.7" text-anchor="middle" font-size="9.6" font-weight="900" font-family="Arial Black,Arial,Helvetica,sans-serif" fill="#8a4b00" stroke="#fff6c4" stroke-width=".45" paint-order="stroke">SP</text><g clip-path="url(#gcc)"><g transform="rotate(22 12 12)"><rect class="sh" x="-16" y="-4" width="6" height="32" fill="#fff" opacity=".6"/></g></g><path class="tw" d="M19.6 2.6l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z" fill="#fff"/><path class="tw" style="animation-delay:-1.3s" d="M3.4 16.2l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5z" fill="#fff"/></svg>`;
 const tIco=(i,s=26)=>ico(IC[i]?i:(EM[i]||'star'),s);
 const ICOPT=['star:তারা','globe:ওয়েবসাইট','news:আর্টিকেল','play:ভিডিও','help:কুইজ','bag:অফার','phone:অ্যাপ','gift:গিফট','coins:কয়েন','book:বই','link:লিংক'];
 const icoSel=(id,v)=>`<select id="${id}">${ICOPT.map(o=>{const[a,b]=o.split(':');return `<option value="${a}" ${a===v?'selected':''}>${b}</option>`}).join('')}</select>`;
@@ -159,7 +173,7 @@ const seed=()=>Array.from({length:20},(_,i)=>{const[ic,n]=TT[i%5];return{id:'t'+
 function sampleRead(){return{id:'r1',ord:20,type:'read',icon:'news',title:'আর্টিকেল সিরিজ (৩ পেজ)',per:15,sec:45,pts:30,on:1,url:'',pages:[
 {title:'পেজ ১: ভূমিকা',body:'এটা নমুনা আর্টিকেল। অ্যাডমিন প্যানেলের টাস্ক ট্যাব থেকে নিজের আসল লেখা দিয়ে নতুন আর্টিকেল টাস্ক বানান।\n\nপ্রতিটি পেজে কয়েক সেকেন্ড থাকতে হবে এবং নিচে স্ক্রল করে পুরোটা পড়তে হবে।'},
 {title:'পেজ ২: মূল আলোচনা',body:'এখানে বিষয়ের মূল অংশ থাকবে। ভালো ও কাজের লেখা দিলে ইউজার ফিরে আসবে।\n\nনমুনা লেখাটা বদলে নিন।'},
-{title:'পেজ ৩: উপসংহার',body:'শেষ পেজে পৌঁছে "সম্পন্ন করুন" চাপলে পড়ার জন্য SP Coin যোগ হবে।'}]}}
+{title:'পেজ ৩: উপসংহার',body:'শেষ পেজে পৌঁছে "সম্পন্ন করুন" চাপলে পড়ার জন্য কয়েন যোগ হবে।'}]}}
 
 const LV=[[0,'ব্রোঞ্জ','#cd7f32',0],[10,'সিলভার','#9ca3af',10],[30,'গোল্ড','#f5b301',20],[70,'প্ল্যাটিনাম','#22c4b8',30],[150,'ডায়মন্ড','#8b5cf6',50]];
 const lvl=n=>{let i=0;LV.forEach((l,k)=>{if((n||0)>=l[0])i=k});return i};
@@ -174,7 +188,7 @@ const U=()=>D.u.find(x=>x.id===me);
 const tk=p=>'৳'+(p/D.s.rate).toFixed(2);
 const fmt=t=>new Date(t).toLocaleString('bn-BD');
 const today=()=>new Date().toISOString().slice(0,10);
-function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',Math.max(2800,m.length*90))}
+function toast(m){const t=$('#toast');t.innerHTML=esc(m).replace(/\{coin\}/g,spCoin(17));t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',Math.max(2800,m.length*90))}
 function sv(col,o){if(FB)fs.collection(col).doc(o.id).set(JSON.parse(JSON.stringify(o)),{merge:true}).catch(e=>toast('Error: '+e.code));else try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function log(u,txt,p){const o={id:rid(),u,txt,p,at:Date.now()};D.l.unshift(o);sv('logs',o)}
 
@@ -268,18 +282,18 @@ function claim(){const u=U();if(!u||!u.pend)return;const t=D.t.find(x=>x.id===u.
  const g=Math.round(t.pts*(1+LV[lvl(u.tasks)][3]/100)),first=!u.tasks,old=lvl(u.tasks);
  u.pts+=g;u.tasks=(u.tasks||0)+1;u.done[t.id]=Date.now();u.pend=null;log(u.id,'টাস্ক: '+t.title,g);
  if(first&&u.by){if(FB)refOk(u);else{const r=D.r.find(x=>x.id===u.id);if(r)r.ok=1}}
- sv('users',u);boom();toast('+'+g+' SP Coin! '+(lvl(u.tasks)>old?'লেভেল আপ: '+LV[lvl(u.tasks)][1]:''));render()}
+ sv('users',u);boom();toast('+'+g+' {coin}! '+(lvl(u.tasks)>old?'লেভেল আপ: '+LV[lvl(u.tasks)][1]:''));render()}
 const cancelTask=()=>{const u=U();u.pend=null;sv('users',u);render()};
 function daily(){const u=U(),t=today();if(u.last===t)return toast('আজকের বোনাস নেওয়া হয়েছে');
  const y=new Date(Date.now()-864e5).toISOString().slice(0,10);u.streak=u.last===y?(u.streak||0)+1:1;u.last=t;
  let b=Math.min(5+u.streak*2,25),x='';if(u.streak%7===0){b+=D.s.streak7;x=' (৭ দিনের স্ট্রিক বোনাস সহ!)'}
- u.pts+=b;log(u.id,'ডেইলি বোনাস – স্ট্রিক '+u.streak,b);sv('users',u);boom();toast('+'+b+' SP Coin'+x);render()}
+ u.pts+=b;log(u.id,'ডেইলি বোনাস – স্ট্রিক '+u.streak,b);sv('users',u);boom();toast('+'+b+' {coin}'+x);render()}
 function collect(){const u=U();if(!u)return;const mine=D.r.filter(r=>r.by===u.id),open=mine.filter(r=>r.ok&&!r.paid);if(!open.length)return;
  const can=Math.max(0,D.s.refMax-mine.filter(r=>r.paid).length),take=open.slice(0,can);if(!take.length)return;
  take.forEach(r=>{r.paid=1;sv('refs',r)});const b=take.length*D.s.ref;u.pts+=b;log(u.id,'রেফার বোনাস ×'+take.length,b);sv('users',u);toast('রেফার বোনাস +'+b)}
 function doWd(){const u=U(),amt=parseInt($('#w_a').value),m=$('#w_m').value,no=$('#w_n').value.trim();
  if(!D.s.wdOn)return toast('উইথড্র সাময়িক বন্ধ আছে');
- if(!amt||amt<D.s.minW)return toast('ন্যূনতম '+D.s.minW+' SP Coin');if(amt>u.pts)return toast('পর্যাপ্ত SP Coin নেই');
+ if(!amt||amt<D.s.minW)return toast('ন্যূনতম '+D.s.minW+' {coin}');if(amt>u.pts)return toast('পর্যাপ্ত {coin} নেই');
  if(!/^01\d{9}$/.test(no))return toast('সঠিক নম্বর দিন (01XXXXXXXXX)');
  if(D.w.some(w=>w.u===u.id&&w.st==='pending'))return toast('আগের রিকোয়েস্ট পেন্ডিং আছে');
  u.pts-=amt;const w={id:rid(),u:u.id,uname:u.name,amt,m,no,st:'pending',at:Date.now()};D.w.unshift(w);
@@ -304,22 +318,22 @@ function userView(){
  const link=location.href.split('?')[0].split('#')[0]+'?ref='+u.code,RR=D.r.filter(r=>r.by===u.id),paid=RR.filter(r=>r.paid).length,got=u.last===today();let body='';
  if(tab==='home'){let pend='';
   if(u.pend){const t=D.t.find(x=>x.id===u.pend.tid);if(t)pend=`<div class="card" style="border:2px solid var(--pri)"><b>${tIco(t.icon,20)} ${esc(t.title)}</b><p class="mut" id="cd"></p><div class="bar"><i id="pb"></i></div><br>
-   <button id="cl" onclick="claim()" disabled>${ico('gift',18)} SP Coin নিন</button> <button class="sec" onclick="startTask('${t.id}')">লিংক আবার খুলুন</button> <button class="sec" onclick="cancelTask()">বাতিল</button></div>`}
+   <button id="cl" onclick="claim()" disabled>${ico('gift',18)} পুরস্কার নিন</button> <button class="sec" onclick="startTask('${t.id}')">লিংক আবার খুলুন</button> <button class="sec" onclick="cancelTask()">বাতিল</button></div>`}
   body=`<div class="card row"><div><b>${ico('flame',18,'#f97316')} ডেইলি বোনাস</b><div class="mut">স্ট্রিক: ${u.streak||0} দিন · ৭ দিন পূর্ণ হলে +${D.s.streak7}</div></div><button class="${got?'sec':'ok'}" ${got?'disabled':''} onclick="daily()">${got?'নেওয়া হয়েছে ✓':'বোনাস নিন'}</button></div>`+pend+
   D.t.filter(t=>t.on).map((t,i)=>{const l=u.done[t.id],dn=l&&Date.now()-l<D.s.cool*3600e3,g=Math.round(t.pts*(1+LV[L][3]/100));
-   return (i&&i%6===0?adBox():'')+`<div class="card task row" style="--h:${(i*47)%360}"><div class="row" style="justify-content:flex-start"><div class="ic">${tIco(t.icon)}</div><div><b>${esc(t.title)}</b><div class="mut">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ · ':''}${ico('clock',15)} ${t.sec} সেকেন্ড · ${spCoin(16)} ${g} SP Coin</div></div></div>
+   return (i&&i%6===0?adBox():'')+`<div class="card task row" style="--h:${(i*47)%360}"><div class="row" style="justify-content:flex-start"><div class="ic">${tIco(t.icon)}</div><div><b>${esc(t.title)}</b><div class="mut">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ · ':''}${ico('clock',15)} ${t.sec} সেকেন্ড · ${spCoin(18)} ${g}</div></div></div>
    <button ${dn?'disabled':''} onclick="startTask('${t.id}')">${dn?'সম্পন্ন ✓':'শুরু করুন'}</button></div>`}).join('')||'<div class="card mut">এখন কোনো টাস্ক নেই</div>'}
- if(tab==='ref')body=`<div class="card"><b>${ico('gift',18,'#ec4899')} আপনার রেফার কোড: ${u.code}</b><p class="mut">বন্ধু রেজিস্টার করে প্রথম টাস্ক শেষ করলে আপনি পাবেন ${D.s.ref} SP Coin। সর্বোচ্চ ${D.s.refMax} জন (পেয়েছেন ${paid} জনের)।</p>
+ if(tab==='ref')body=`<div class="card"><b>${ico('gift',18,'#ec4899')} আপনার রেফার কোড: ${u.code}</b><p class="mut">বন্ধু রেজিস্টার করে প্রথম টাস্ক শেষ করলে আপনি পাবেন ${spCoin(16)} ${D.s.ref}। সর্বোচ্চ ${D.s.refMax} জন (পেয়েছেন ${paid} জনের)।</p>
   <input readonly value="${esc(link)}" onclick="this.select()"><button onclick="navigator.clipboard?.writeText('${esc(link)}');toast('কপি হয়েছে')">${ico('copy',17)} লিংক কপি</button></div>
   <div class="card"><b>মোট রেফারাল: ${RR.length}</b>${RR.map(r=>`<div class="row" style="padding:9px 0;border-top:1px solid var(--bd)"><span>${esc(r.uname||'ইউজার')}</span><span class="tag ${r.paid?'ok':''}">${r.paid?'বোনাস পেয়েছেন':r.ok?'বোনাস যোগ হচ্ছে':'প্রথম টাস্কের অপেক্ষায়'}</span></div>`).join('')}</div>`+adBox();
- if(tab==='wd')body=`<div class="card"><p class="mut">ন্যূনতম ${D.s.minW} SP Coin (${tk(D.s.minW)}) · ${D.s.rate} SP Coin = ৳১ · অ্যাডমিন যাচাই করে পেমেন্ট দেবেন</p>
-  <label>পরিমাণ (SP Coin)</label><input id="w_a" type="number" value="${D.s.minW}"><label>মাধ্যম</label><select id="w_m"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
+ if(tab==='wd')body=`<div class="card"><p class="mut">ন্যূনতম ${spCoin(16)} ${D.s.minW} (${tk(D.s.minW)}) · ${spCoin(16)} ${D.s.rate} = ৳১ · অ্যাডমিন যাচাই করে পেমেন্ট দেবেন</p>
+  <label>পরিমাণ ${spCoin(14)}</label><input id="w_a" type="number" value="${D.s.minW}"><label>মাধ্যম</label><select id="w_m"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
   <label>নম্বর</label><input id="w_n" inputmode="numeric" placeholder="01XXXXXXXXX"><button onclick="doWd()">${ico('wallet',18)} উইথড্র করুন</button></div>
   <div class="card tbl"><table><tr><th>তারিখ</th><th>পরিমাণ</th><th>মাধ্যম</th><th>স্ট্যাটাস</th></tr>${D.w.filter(w=>w.u===u.id).map(w=>`<tr><td>${fmt(w.at)}</td><td>${w.amt}</td><td>${w.m}</td><td>${stTag(w.st)}</td></tr>`).join('')||'<tr><td colspan=4 class="mut">কিছু নেই</td></tr>'}</table></div>`;
- if(tab==='hist')body=oldMsgs(u)+`<div class="card tbl"><table><tr><th>তারিখ</th><th>বিবরণ</th><th>SP Coin</th></tr>${D.l.filter(l=>l.u===u.id).slice(0,50).map(l=>`<tr><td>${fmt(l.at)}</td><td>${esc(l.txt)}</td><td style="color:var(${l.p>0?'--ok':'--bad'})">${l.p>0?'+':''}${l.p}</td></tr>`).join('')||'<tr><td colspan=3 class="mut">কিছু নেই</td></tr>'}</table></div>`;
+ if(tab==='hist')body=oldMsgs(u)+`<div class="card tbl"><table><tr><th>তারিখ</th><th>বিবরণ</th><th>${spCoin(16)}</th></tr>${D.l.filter(l=>l.u===u.id).slice(0,50).map(l=>`<tr><td>${fmt(l.at)}</td><td>${esc(l.txt)}</td><td style="color:var(${l.p>0?'--ok':'--bad'})">${l.p>0?'+':''}${l.p}</td></tr>`).join('')||'<tr><td colspan=3 class="mut">কিছু নেই</td></tr>'}</table></div>`;
  const nav=[['home','home','টাস্ক'],['ref','gift','রেফার'],['wd','wallet','উইথড্র'],['hist','history','হিস্টোরি']];
- return `<div class="hero"><div class="hr"><div class="av" style="--lc:${LV[L][2]}">${ico('user',30)}</div><div class="hn"><b>${esc(u.name)}</b><span class="badge">${ico('medal',14,LV[L][2])} ${LV[L][1]}${LV[L][3]?' · +'+LV[L][3]+'%':''}</span></div><button class="sec" onclick="logout()" style="padding:4px 10px;min-height:38px">${ico('logout',16)}</button></div>
-  <div class="bal">${spCoin(34)}<b>${u.pts}</b><span>SP Coin</span><em>≈ ${tk(u.pts)}</em></div>
+ return `<div class="hero"><div class="hr"><div class="av" style="--lc:${LV[L][2]}"><i>${ico('user',28)}</i></div><div class="hn"><div class="nm"><b>${esc(u.name)}</b><span class="badge">${ico('medal',15,LV[L][2])} ${LV[L][1]}</span></div><small>ID: ${u.code}${LV[L][3]?' · টাস্কে +'+LV[L][3]+'% বোনাস':''}</small></div><button class="sec" onclick="logout()" style="padding:4px 10px;min-height:38px">${ico('logout',16)}</button></div>
+  <div class="bal">${spCoin(44)}<b>${u.pts}</b><em>≈ ${tk(u.pts)}</em></div>
   <div class="bar"><i style="width:${pr}%"></i></div><div class="nl">${nx?`পরের লেভেল ${nx[1]} · আরও ${nx[0]-(u.tasks||0)}টি টাস্ক`:'সর্বোচ্চ লেভেলে পৌঁছে গেছেন'}</div></div>
   <div class="wrap"><div class="grid"><div class="stat g1"><b>${ico('flame',22)} ${u.streak||0}</b><span>স্ট্রিক</span></div><div class="stat g2"><b>${ico('check',22)} ${u.tasks||0}</b><span>টাস্ক সম্পন্ন</span></div><div class="stat g3"><b>${ico('users',22)} ${RR.length}</b><span>রেফারাল</span></div></div>
   <div class="card mut">${ico('megaphone',16)} ${esc(D.s.notice)}</div>${tab==='home'?msgCards(u)+adBox():''}${body}</div>
@@ -328,17 +342,17 @@ function userView(){
 /* ---------- Admin view ---------- */
 function adminView(){
  const tabs={dash:ico('chart',16)+' ড্যাশবোর্ড',tasks:ico('edit',16)+' টাস্ক',users:ico('users',16)+' ইউজার',wd:ico('wallet',16)+' উইথড্র',set:ico('gear',16)+' সেটিংস'};let b='';
- if(tab==='dash')b=`<div class="grid"><div class="stat g1"><b>${D.u.length}</b><span>মোট ইউজার</span></div><div class="stat g2"><b>${D.t.length}</b><span>টাস্ক</span></div><div class="stat g3"><b>${D.u.reduce((a,u)=>a+(u.pts||0),0)}</b><span>ইউজারদের মোট SP Coin</span></div><div class="stat g4"><b>${D.w.filter(w=>w.st==='pending').length}</b><span>পেন্ডিং উইথড্র</span></div></div>`;
- if(tab==='tasks')b=`<div class="card"><b>${ico('link',18)} ওয়েবসাইট ভিজিট / লিংক টাস্ক</b><div class="grid"><div><label>আইকন</label>${icoSel('n_i','globe')}</div><div><label>সময় (সেকেন্ড)</label><input id="n_s" type="number" value="10"></div><div><label>SP Coin</label><input id="n_p" type="number" value="10"></div></div>
-  <label>টাইটেল</label><input id="n_t"><label>লিংক (আপনার নিজের কনটেন্ট পেজ)</label><input id="n_u" placeholder="https://"><button onclick="addTask()">যোগ করুন</button> <button class="sec" onclick="if(confirm('২০টি ডিফল্ট টাস্ক বসবে (একই আইডি থাকলে বদলে যাবে)'))seedTasks()">২০টি ডিফল্ট টাস্ক সিড</button></div><div class="card"><b>${ico('book',18)} নতুন আর্টিকেল টাস্ক (প্রতি পেজে আপনার অ্যাড)</b><div class="grid"><div><label>আইকন</label>${icoSel('r_i','news')}</div><div><label>প্রতি পেজে সেকেন্ড</label><input id="r_s" type="number" value="15"></div><div><label>মোট SP Coin</label><input id="r_p" type="number" value="20"></div></div><label>টাইটেল</label><input id="r_t"><label>পেজগুলো (প্রতি পেজের প্রথম লাইন শিরোনাম; পেজ আলাদা করতে একটা লাইনে --- লিখুন)</label><textarea id="r_b" rows="8" placeholder="পেজ ১ শিরোনাম&#10;লেখা...&#10;---&#10;পেজ ২ শিরোনাম&#10;লেখা..."></textarea><label>এই টাস্কের আলাদা Adsterra কোড (ঐচ্ছিক, ফাঁকা রাখলে সেটিংসের কোড দেখাবে)</label><textarea id="r_a" rows="3"></textarea><button onclick="addRead()">আর্টিকেল টাস্ক যোগ করুন</button></div>`
-  +D.t.map(t=>`<div class="card row"><div><b>${tIco(t.icon,18)} ${esc(t.title)}</b><div class="mut" style="word-break:break-all">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ × '+t.per+'s':esc(t.url)}<br>${t.sec}s · ${t.pts} SP Coin · <span class="tag ${t.on?'ok':'bad'}">${t.on?'চালু':'বন্ধ'}</span></div></div>
+ if(tab==='dash')b=`<div class="grid"><div class="stat g1"><b>${D.u.length}</b><span>মোট ইউজার</span></div><div class="stat g2"><b>${D.t.length}</b><span>টাস্ক</span></div><div class="stat g3"><b>${D.u.reduce((a,u)=>a+(u.pts||0),0)}</b><span>ইউজারদের মোট কয়েন</span></div><div class="stat g4"><b>${D.w.filter(w=>w.st==='pending').length}</b><span>পেন্ডিং উইথড্র</span></div></div>`;
+ if(tab==='tasks')b=`<div class="card"><b>${ico('link',18)} ওয়েবসাইট ভিজিট / লিংক টাস্ক</b><div class="grid"><div><label>আইকন</label>${icoSel('n_i','globe')}</div><div><label>সময় (সেকেন্ড)</label><input id="n_s" type="number" value="10"></div><div><label>কয়েন</label><input id="n_p" type="number" value="10"></div></div>
+  <label>টাইটেল</label><input id="n_t"><label>লিংক (আপনার নিজের কনটেন্ট পেজ)</label><input id="n_u" placeholder="https://"><button onclick="addTask()">যোগ করুন</button> <button class="sec" onclick="if(confirm('২০টি ডিফল্ট টাস্ক বসবে (একই আইডি থাকলে বদলে যাবে)'))seedTasks()">২০টি ডিফল্ট টাস্ক সিড</button></div><div class="card"><b>${ico('book',18)} নতুন আর্টিকেল টাস্ক (প্রতি পেজে আপনার অ্যাড)</b><div class="grid"><div><label>আইকন</label>${icoSel('r_i','news')}</div><div><label>প্রতি পেজে সেকেন্ড</label><input id="r_s" type="number" value="15"></div><div><label>মোট কয়েন</label><input id="r_p" type="number" value="20"></div></div><label>টাইটেল</label><input id="r_t"><label>পেজগুলো (প্রতি পেজের প্রথম লাইন শিরোনাম; পেজ আলাদা করতে একটা লাইনে --- লিখুন)</label><textarea id="r_b" rows="8" placeholder="পেজ ১ শিরোনাম&#10;লেখা...&#10;---&#10;পেজ ২ শিরোনাম&#10;লেখা..."></textarea><label>এই টাস্কের আলাদা Adsterra কোড (ঐচ্ছিক, ফাঁকা রাখলে সেটিংসের কোড দেখাবে)</label><textarea id="r_a" rows="3"></textarea><button onclick="addRead()">আর্টিকেল টাস্ক যোগ করুন</button></div>`
+  +D.t.map(t=>`<div class="card row"><div><b>${tIco(t.icon,18)} ${esc(t.title)}</b><div class="mut" style="word-break:break-all">${t.type==='read'?ico('book',15)+' '+(t.pages||[]).length+' পেজ × '+t.per+'s':esc(t.url)}<br>${t.sec}s · ${t.pts} কয়েন · <span class="tag ${t.on?'ok':'bad'}">${t.on?'চালু':'বন্ধ'}</span></div></div>
   <div><button class="sec" onclick="editTask('${t.id}')">এডিট</button> <button class="sec" onclick="togTask('${t.id}')">${t.on?'বন্ধ':'চালু'}</button> <button class="bad" onclick="delTask('${t.id}')">মুছুন</button></div></div>`).join('');
- if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>SP Coin</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}${u.email?'<div class="mut">'+esc(u.email)+'</div>':''}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${ico('medal',18,LV[lvl(u.tasks)][2])}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
-  <td><button class="sec" onclick="adjPts('${u.id}')">SP Coin</button> <button class="sec" onclick="msgModal('${u.id}')">বার্তা</button> <button class="sec" onclick="resetTasks('${u.id}')">টাস্ক রিসেট</button> <button class="sec" onclick="ban('${u.id}')">${u.banned?'আনব্লক':'ব্লক'}</button></td></tr>`).join('')||'<tr><td colspan=7 class="mut">কোনো ইউজার নেই</td></tr>'}</table></div>`;
- if(tab==='wd')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>SP Coin (৳)</th><th>মাধ্যম</th><th>নম্বর</th><th>স্ট্যাটাস</th><th></th></tr>${D.w.map(w=>`<tr><td>${esc(w.uname||D.u.find(x=>x.id===w.u)?.name)}</td><td>${w.amt} (${tk(w.amt)})</td><td>${w.m}</td><td>${esc(w.no)}</td><td>${stTag(w.st)}</td>
+ if(tab==='users')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>কয়েন</th><th>টাস্ক</th><th>লেভেল</th><th>স্ট্রিক</th><th>স্ট্যাটাস</th><th></th></tr>${D.u.map(u=>`<tr><td>${esc(u.name)}${u.email?'<div class="mut">'+esc(u.email)+'</div>':''}</td><td>${u.pts}</td><td>${u.tasks||0}</td><td>${ico('medal',18,LV[lvl(u.tasks)][2])}</td><td>${u.streak||0}</td><td><span class="tag ${u.banned?'bad':'ok'}">${u.banned?'ব্লক':'সক্রিয়'}</span></td>
+  <td><button class="sec" onclick="adjPts('${u.id}')">কয়েন</button> <button class="sec" onclick="msgModal('${u.id}')">বার্তা</button> <button class="sec" onclick="resetTasks('${u.id}')">টাস্ক রিসেট</button> <button class="sec" onclick="ban('${u.id}')">${u.banned?'আনব্লক':'ব্লক'}</button></td></tr>`).join('')||'<tr><td colspan=7 class="mut">কোনো ইউজার নেই</td></tr>'}</table></div>`;
+ if(tab==='wd')b=`<div class="card tbl"><table><tr><th>ইউজার</th><th>কয়েন (৳)</th><th>মাধ্যম</th><th>নম্বর</th><th>স্ট্যাটাস</th><th></th></tr>${D.w.map(w=>`<tr><td>${esc(w.uname||D.u.find(x=>x.id===w.u)?.name)}</td><td>${w.amt} (${tk(w.amt)})</td><td>${w.m}</td><td>${esc(w.no)}</td><td>${stTag(w.st)}</td>
   <td>${w.st==='pending'?`<button class="ok" onclick="wdSet('${w.id}','paid')">পরিশোধ</button> <button class="bad" onclick="wdSet('${w.id}','rejected')">বাতিল</button>`:''} <button class="sec" onclick="msgModal('${w.u}')">বার্তা</button></td></tr>`).join('')||'<tr><td colspan=6 class="mut">কোনো রিকোয়েস্ট নেই</td></tr>'}</table></div>`;
  if(tab==='set'){const s=D.s,f=(k,l,t='number')=>`<div><label>${l}</label><input id="s_${k}" type="${t}" value="${esc(s[k])}"></div>`;
-  b=`<div class="card"><div class="grid">${f('name','সাইটের নাম','text')}${f('rate','কত SP Coin-এ ৳১')}${f('minW','ন্যূনতম উইথড্র (SP Coin)')}${f('ref','রেফার বোনাস')}${f('refMax','সর্বোচ্চ রেফার বোনাস (জন)')}${f('signup','সাইনআপ বোনাস')}${f('cool','টাস্ক রিপিট (ঘণ্টা)')}${f('streak7','৭ দিনের স্ট্রিক বোনাস')}
+  b=`<div class="card"><div class="grid">${f('name','সাইটের নাম','text')}${f('rate','কত কয়েনে ৳১')}${f('minW','ন্যূনতম উইথড্র (কয়েন)')}${f('ref','রেফার বোনাস')}${f('refMax','সর্বোচ্চ রেফার বোনাস (জন)')}${f('signup','সাইনআপ বোনাস')}${f('cool','টাস্ক রিপিট (ঘণ্টা)')}${f('streak7','৭ দিনের স্ট্রিক বোনাস')}
   <div><label>ডিভাইস লক</label><select id="s_devLock"><option value="1" ${s.devLock?'selected':''}>চালু</option><option value="0" ${s.devLock?'':'selected'}>বন্ধ (টেস্টের জন্য)</option></select></div><div><label>মেইনটেন্যান্স মোড</label><select id="s_maint"><option value="0" ${s.maint?'':'selected'}>বন্ধ</option><option value="1" ${s.maint?'selected':''}>চালু</option></select></div><div><label>উইথড্র</label><select id="s_wdOn"><option value="1" ${s.wdOn?'selected':''}>চালু</option><option value="0" ${s.wdOn?'':'selected'}>বন্ধ</option></select></div>${f('dailyCap','দৈনিক টাস্ক লিমিট (0 = সীমাহীন)')}</div>
   ${f('notice','নোটিশ','text')}${FB?'':f('admin','অ্যাডমিন ইউজারনেম (ডেমো)','text')+f('apass','অ্যাডমিন পাসওয়ার্ড (ডেমো)','text')}
   <label>মেইনটেন্যান্স শিরোনাম</label><input id="s_maintTitle" value="${esc(s.maintTitle||'')}" placeholder="সাইট এখন আপডেট হচ্ছে"><label>মেইনটেন্যান্স বার্তা (মেইনটেন্যান্স চালু থাকলে ইউজাররা এটা দেখবে)</label><textarea id="s_maintMsg" rows="3" placeholder="আমরা সাইটটিকে আরও ভালো করছি...">${esc(s.maintMsg||'')}</textarea><label>কখন ফিরবে (ঐচ্ছিক, যেমন: রাত ১০টা)</label><input id="s_maintEta" value="${esc(s.maintEta||'')}"><button class="sec" onclick="mtPrev()" style="margin-bottom:14px">${ico('eye',16)} মেইনটেন্যান্স পেজ প্রিভিউ (আগে সেভ করুন)</button><br><label>Adsterra অ্যাড কোড (পেস্ট করুন, হোম, রেফার ও আর্টিকেল পেজে দেখাবে)</label><textarea id="s_adCode" rows="5">${esc(s.adCode||'')}</textarea>${f('adH','অ্যাড ইউনিটের উচ্চতা (px)')}
@@ -347,11 +361,11 @@ function adminView(){
 const putT=t=>{if(FB)fs.doc('tasks/'+t.id).set(t);else{const i=D.t.findIndex(x=>x.id===t.id);i<0?D.t.push(t):D.t[i]=t;sv()}};
 function addTask(){const t=$('#n_t').value.trim(),u=$('#n_u').value.trim();if(!t||!/^https?:\/\//.test(u))return toast('টাইটেল ও সঠিক লিংক দিন');
  putT({id:rid(),ord:D.t.length,icon:$('#n_i').value||'⭐',title:t,url:u,sec:+$('#n_s').value||10,pts:+$('#n_p').value||1,on:1});render()}
-function editTask(id){const t=D.t.find(x=>x.id===id);if(t.type==='read'){t.title=prompt('টাইটেল',t.title)||t.title;t.pts=+prompt('SP Coin',t.pts)||t.pts;t.per=+prompt('প্রতি পেজ সেকেন্ড',t.per)||t.per;t.sec=(t.pages||[]).length*t.per;putT(t);return render()}const u=prompt('নতুন লিংক',t.url);if(u&&/^https?:\/\//.test(u)){t.url=u;t.title=prompt('টাইটেল',t.title)||t.title;t.pts=+prompt('SP Coin',t.pts)||t.pts;t.sec=+prompt('সেকেন্ড',t.sec)||t.sec;putT(t);render()}}
+function editTask(id){const t=D.t.find(x=>x.id===id);if(t.type==='read'){t.title=prompt('টাইটেল',t.title)||t.title;t.pts=+prompt('কয়েন',t.pts)||t.pts;t.per=+prompt('প্রতি পেজ সেকেন্ড',t.per)||t.per;t.sec=(t.pages||[]).length*t.per;putT(t);return render()}const u=prompt('নতুন লিংক',t.url);if(u&&/^https?:\/\//.test(u)){t.url=u;t.title=prompt('টাইটেল',t.title)||t.title;t.pts=+prompt('কয়েন',t.pts)||t.pts;t.sec=+prompt('সেকেন্ড',t.sec)||t.sec;putT(t);render()}}
 const togTask=id=>{const t=D.t.find(x=>x.id===id);t.on=t.on?0:1;putT(t);render()};
 const delTask=id=>{if(!confirm('মুছবেন?'))return;if(FB)fs.doc('tasks/'+id).delete();else{D.t=D.t.filter(x=>x.id!==id);sv()}render()};
 const ban=id=>{const u=D.u.find(x=>x.id===id);u.banned=u.banned?0:1;sv('users',u);render()};
-function adjPts(id){const u=D.u.find(x=>x.id===id),v=parseInt(prompt('SP Coin যোগ/বিয়োগ (যেমন 50 বা -50)','0'));if(!v)return;u.pts=Math.max(0,u.pts+v);log(id,'অ্যাডমিন অ্যাডজাস্ট',v);sv('users',u);render()}
+function adjPts(id){const u=D.u.find(x=>x.id===id),v=parseInt(prompt('কয়েন যোগ/বিয়োগ (যেমন 50 বা -50)','0'));if(!v)return;u.pts=Math.max(0,u.pts+v);log(id,'অ্যাডমিন অ্যাডজাস্ট',v);sv('users',u);render()}
 function seedTasks(){[...seed(),sampleRead()].forEach(putT);if(FB)saveSet(1);render()}
 function saveSet(q){const s=D.s;if(!q){['name','notice','admin','apass'].forEach(k=>{const e=$('#s_'+k);if(e)s[k]=e.value.trim()||s[k]});
  ['rate','minW','ref','refMax','signup','cool','streak7','dailyCap'].forEach(k=>s[k]=Math.max(0,+$('#s_'+k).value)||(k==='rate'?100:0));s.devLock=+$('#s_devLock').value;s.maint=+$('#s_maint').value;s.wdOn=+$('#s_wdOn').value;s.adCode=$('#s_adCode').value.trim();s.adH=+$('#s_adH').value||250;s.maintTitle=$('#s_maintTitle').value.trim();s.maintMsg=$('#s_maintMsg').value.trim();s.maintEta=$('#s_maintEta').value.trim()}
@@ -392,7 +406,7 @@ function maintView(prev){const s=D.s;
  const pr=['gear','sparkle','wrench','star','sparkle','gear','coins','sparkle'].map((e,i)=>`<span class="p" style="left:${6+i*12}%;animation-delay:${i*-1.1}s;animation-duration:${8+i%3*2}s">${ico(e,22)}</span>`).join('');
  const btn=prev?'<button class="sec" onclick="document.getElementById(\'mtp\').remove()">প্রিভিউ বন্ধ করুন</button>':'<button class="sec" onclick="logout()">লগআউট</button>';
  return `<div class="mt"><div class="blob b1"></div><div class="blob b2"></div>${pr}<div class="box"><div class="gears"><span class="g-a">${ico('gear',54)}</span><span class="g-b">${ico('gear',38)}</span></div>
- <h1>${esc(s.maintTitle||'সাইট এখন আপডেট হচ্ছে')}</h1><p>${esc(s.maintMsg||'আমরা সাইটটিকে আরও ভালো করছি। অল্প সময় পরে আবার ঘুরে আসুন। আপনার SP Coin সম্পূর্ণ নিরাপদ আছে।')}</p>
+ <h1>${esc(s.maintTitle||'সাইট এখন আপডেট হচ্ছে')}</h1><p>${esc(s.maintMsg||'আমরা সাইটটিকে আরও ভালো করছি। অল্প সময় পরে আবার ঘুরে আসুন। আপনার ব্যালান্স সম্পূর্ণ নিরাপদ আছে।')}</p>
  ${s.maintEta?`<div class="eta">${ico('clock',15)} ${esc(s.maintEta)}</div>`:''}<div class="ld"><i></i></div><div style="margin-top:18px">${btn}</div></div></div>`}
 function mtPrev(){const d=document.createElement('div');d.id='mtp';d.innerHTML=maintView(1);document.body.appendChild(d)}
 function resetTasks(id){const u=D.u.find(x=>x.id===id);if(!u||!confirm(u.name+' এর সব টাস্ক আবার চালু করবেন?'))return;
@@ -404,7 +418,7 @@ function render(soft){
  $('#app').innerHTML=adm?adminView():me?(D.s.maint?maintView():rd?readerView():userView()):authView();
  clearInterval(tick);const u=me&&!adm&&U();if(rd){tick=setInterval(()=>{if(!document.hidden)rd.sec++;rdUp()},1000);rdUp()}
  if(u&&u.pend&&tab==='home'){const t=D.t.find(x=>x.id===u.pend.tid);if(t){const up=()=>{const el=(Date.now()-u.pend.start)/1000,left=Math.max(0,Math.ceil(t.sec-el)),cd=$('#cd');if(!cd)return;
-  cd.textContent=left?`নতুন ট্যাবে ${t.sec} সেকেন্ড থাকুন — বাকি: ${left}s`:'সময় শেষ! এখন SP Coin নিন।';$('#pb').style.width=Math.min(100,el/t.sec*100)+'%';$('#cl').disabled=left>0;if(!left)clearInterval(tick)};up();tick=setInterval(up,500)}}
+  cd.textContent=left?`নতুন ট্যাবে ${t.sec} সেকেন্ড থাকুন — বাকি: ${left}s`:'সময় শেষ! এখন পুরস্কার নিন।';$('#pb').style.width=Math.min(100,el/t.sec*100)+'%';$('#cl').disabled=left>0;if(!left)clearInterval(tick)};up();tick=setInterval(up,500)}}
  pushAds()}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me&&!adm&&U()?.pend&&tab==='home'&&!rd)render()});
 boot();
